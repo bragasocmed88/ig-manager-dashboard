@@ -9,195 +9,106 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --brand-color: #4F46E5;
-      --brand-soft: rgba(79, 70, 229, 0.12);
-    }
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #F4F6FA;
-      color: #1E293B;
-    }
-    .soft-card {
-      background: #FFFFFF;
-      border-radius: 20px;
-      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
-      border: 1px solid #F1F5F9;
-    }
-    .brand-bg {
-      background-color: var(--brand-color) !important;
-      color: #FFFFFF !important;
-    }
-    .brand-bg-soft {
-      background-color: var(--brand-soft) !important;
-      color: var(--brand-color) !important;
-    }
-    .brand-text {
-      color: var(--brand-color) !important;
-    }
-    .brand-border {
-      border-color: var(--brand-color) !important;
-    }
-    .nav-item {
-      transition: all 0.2s ease;
-    }
-    .nav-item.active {
-      background-color: var(--brand-soft);
-      color: var(--brand-color);
-      font-weight: 700;
-    }
-    .nav-item:not(.active):hover {
-      background-color: #F8FAFC;
-      color: #0F172A;
-    }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #F1F5F9; }
-    ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 999px; }
+    :root { --brand-color: #4F46E5; --brand-soft: rgba(79, 70, 229, 0.12); }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F4F6FA; color: #1E293B; }
+    .soft-card { background: #FFFFFF; border-radius: 20px; box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04); border: 1px solid #F1F5F9; }
+    .brand-bg { background-color: var(--brand-color) !important; color: #FFFFFF !important; }
+    .brand-bg-soft { background-color: var(--brand-soft) !important; color: var(--brand-color) !important; }
+    .brand-text { color: var(--brand-color) !important; }
+    .nav-item { transition: all 0.2s ease; }
+    .nav-item.active { background-color: var(--brand-soft); color: var(--brand-color); font-weight: 700; }
+    .nav-item:not(.active):hover { background-color: #F8FAFC; color: #0F172A; }
   </style>
 </head>
 <body class="antialiased">
 
-  <!-- ========================================== -->
-  <!-- LOGIN SCREEN OVERLAY                       -->
-  <!-- ========================================== -->
+  <!-- LOGIN SCREEN -->
   <div id="login-screen" class="fixed inset-0 bg-slate-900/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl border border-slate-100 space-y-6">
       <div class="text-center space-y-2">
-        <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white font-extrabold text-xl flex items-center justify-center mx-auto shadow-lg shadow-indigo-200">
-          M
-        </div>
-        <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Mabes Social Media Dashboard</h1>
-        <p class="text-xs text-slate-500">Silakan login menggunakan akun tim yang terdaftar untuk mengakses sistem.</p>
+        <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white font-extrabold text-xl flex items-center justify-center mx-auto shadow-lg">M</div>
+        <h1 class="text-xl font-extrabold text-slate-900">Mabes Social Media Dashboard</h1>
+        <p class="text-xs text-slate-500">Login menggunakan akun tim terdaftar.</p>
       </div>
-
       <form onsubmit="handleLogin(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1.5">Username</label>
-          <div class="relative">
-            <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-            <input type="text" id="login-username" required placeholder="Masukkan username" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-          </div>
+          <input type="text" id="login-username" required placeholder="socmedadmin" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1.5">Password</label>
-          <div class="relative">
-            <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-            <input type="password" id="login-password" required placeholder="Masukkan password" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-          </div>
+          <input type="password" id="login-password" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
         </div>
-        <p id="login-error" class="hidden text-xs font-semibold text-rose-600 bg-rose-50 px-3 py-2 rounded-lg text-center">
-          Username atau password salah!
-        </p>
-        <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-md shadow-indigo-200 transition">
-          Masuk ke Dashboard
-        </button>
+        <p id="login-error" class="hidden text-xs font-semibold text-rose-600 bg-rose-50 px-3 py-2 rounded-lg text-center">Username atau password salah!</p>
+        <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-md transition">Masuk ke Dashboard</button>
       </form>
-      <p class="text-[11px] text-center text-slate-400">Protected Internal Workspace • Multi-Brand IG Suite</p>
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- MAIN APP CONTAINER                         -->
-  <!-- ========================================== -->
+  <!-- MAIN APP -->
   <div id="app-container" class="hidden min-h-screen flex flex-col lg:flex-row">
-    
     <!-- SIDEBAR -->
     <aside class="w-full lg:w-64 bg-white border-b lg:border-b-0 lg:border-r border-slate-100 flex flex-col justify-between p-5 shrink-0 z-20">
       <div>
-        <!-- Brand Logo -->
-        <div class="flex items-center justify-between lg:justify-start gap-3 mb-8 px-1">
-          <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl brand-bg flex items-center justify-center font-extrabold text-lg shadow-md shrink-0 transition-colors duration-300">
-              M
-            </div>
-            <div class="leading-tight">
-              <span class="font-extrabold text-sm tracking-tight text-slate-900 block">Mabes Social Media</span>
-              <span class="text-[11px] font-bold brand-text block">Dashboard</span>
-            </div>
+        <div class="flex items-center gap-2.5 mb-8 px-1">
+          <div class="w-9 h-9 rounded-xl brand-bg flex items-center justify-center font-extrabold text-lg shadow-md shrink-0">M</div>
+          <div class="leading-tight">
+            <span class="font-extrabold text-sm text-slate-900 block">Mabes Social Media</span>
+            <span class="text-[11px] font-bold brand-text block">Dashboard</span>
           </div>
         </div>
-
-        <!-- Main Menu -->
         <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Main Menu</p>
-        <nav class="space-y-1.5" id="sidebar-nav">
+        <nav class="space-y-1.5">
           <button type="button" onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item active w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm text-slate-600">
-            <i data-lucide="layout-grid" class="w-4 h-4"></i>
-            <span>Dashboard</span>
+            <i data-lucide="layout-grid" class="w-4 h-4"></i><span>Dashboard</span>
           </button>
           <button type="button" onclick="switchTab('ai-post')" id="nav-ai-post" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm text-slate-600">
-            <i data-lucide="sparkles" class="w-4 h-4"></i>
-            <span>AI Playground & Post</span>
+            <i data-lucide="sparkles" class="w-4 h-4"></i><span>AI Playground & Post</span>
           </button>
           <button type="button" onclick="switchTab('calendar')" id="nav-calendar" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm text-slate-600">
-            <i data-lucide="calendar" class="w-4 h-4"></i>
-            <span>Content Calendar</span>
+            <i data-lucide="calendar" class="w-4 h-4"></i><span>Content Calendar</span>
             <span id="badge-scheduled-count" class="ml-auto text-[11px] font-bold brand-bg-soft px-2 py-0.5 rounded-full">2</span>
           </button>
         </nav>
-
-        <!-- General Menu -->
         <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mt-7 mb-2">General</p>
         <nav class="space-y-1.5">
           <button type="button" onclick="switchTab('settings')" id="nav-settings" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm text-slate-600">
-            <i data-lucide="settings" class="w-4 h-4"></i>
-            <span>API & Settings</span>
-            <span id="api-status-dot" class="ml-auto w-2 h-2 rounded-full bg-amber-400" title="Status API"></span>
+            <i data-lucide="settings" class="w-4 h-4"></i><span>API & Settings</span>
+            <span id="api-status-dot" class="ml-auto w-2 h-2 rounded-full bg-amber-400"></span>
           </button>
           <button type="button" onclick="handleLogout()" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm text-rose-600 hover:bg-rose-50">
-            <i data-lucide="log-out" class="w-4 h-4"></i>
-            <span>Logout</span>
+            <i data-lucide="log-out" class="w-4 h-4"></i><span>Logout</span>
           </button>
         </nav>
       </div>
-
-      <!-- Active Brand Theme Indicator Card -->
-      <div class="hidden lg:block mt-8 p-4 rounded-2xl brand-bg transition-colors duration-300">
-        <div class="flex items-center gap-2 mb-1">
-          <i data-lucide="palette" class="w-4 h-4 opacity-90"></i>
-          <span class="text-[11px] font-bold uppercase tracking-wider opacity-90">Active Brand Theme</span>
-        </div>
-        <p id="sidebar-active-brand" class="text-sm font-extrabold truncate mb-1">Semua Akun (Default)</p>
-        <p class="text-[11px] opacity-85 leading-relaxed mb-3">Warna dashboard otomatis menyesuaikan identitas akun IG yang dipilih.</p>
-        <button type="button" onclick="openThemeModal()" class="w-full py-2 px-3 bg-white/20 hover:bg-white/30 text-white rounded-xl text-xs font-bold transition backdrop-blur-xs">
-          Customize Warna Akun
-        </button>
+      <div class="hidden lg:block mt-8 p-4 rounded-2xl brand-bg">
+        <span class="text-[11px] font-bold uppercase tracking-wider opacity-90 block mb-1">Active Brand Theme</span>
+        <p id="sidebar-active-brand" class="text-sm font-extrabold truncate mb-3">Semua Akun (Default)</p>
+        <button type="button" onclick="openThemeModal()" class="w-full py-2 px-3 bg-white/20 hover:bg-white/30 text-white rounded-xl text-xs font-bold transition">Customize Warna Akun</button>
       </div>
     </aside>
 
     <!-- MAIN CONTENT -->
     <main class="flex-1 flex flex-col min-w-0">
-      
       <!-- TOP HEADER -->
       <header class="bg-white/85 backdrop-blur-md border-b border-slate-100 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-10">
-        <!-- Search -->
         <div class="relative w-full sm:w-64">
           <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-          <input type="text" id="global-search" onkeyup="filterAccountsTable()" placeholder="Cari akun Instagram..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200/70 rounded-xl text-sm focus:outline-none focus:border-slate-400">
+          <input type="text" id="global-search" onkeyup="renderAccountsTable()" placeholder="Cari akun Instagram..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200/70 rounded-xl text-sm">
         </div>
-
-        <!-- Account Switcher & User Profile -->
         <div class="flex items-center gap-2.5 ml-auto flex-wrap">
           <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5">
             <span id="header-color-dot" class="w-3 h-3 rounded-full shrink-0" style="background-color: #4F46E5;"></span>
-            <select id="account-selector" onchange="changeActiveAccount(this.value)" class="bg-transparent text-slate-700 text-xs font-bold focus:outline-none pr-2">
-              <option value="all">Semua Akun (All Brands)</option>
-            </select>
+            <select id="account-selector" onchange="changeActiveAccount(this.value)" class="bg-transparent text-slate-700 text-xs font-bold focus:outline-none pr-2"></select>
           </div>
-
-          <button type="button" onclick="openThemeModal()" title="Customize Warna Akun" class="inline-flex items-center gap-1.5 text-xs font-semibold brand-bg-soft px-3 py-2 rounded-xl transition">
-            <i data-lucide="palette" class="w-3.5 h-3.5"></i>
-            <span class="hidden md:inline">Tema Warna</span>
+          <button type="button" onclick="openThemeModal()" class="inline-flex items-center gap-1.5 text-xs font-semibold brand-bg-soft px-3 py-2 rounded-xl">
+            <i data-lucide="palette" class="w-3.5 h-3.5"></i><span class="hidden md:inline">Tema Warna</span>
           </button>
-
-          <button type="button" onclick="openAddAccountModal()" class="inline-flex items-center gap-1.5 text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-2 rounded-xl transition">
-            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-            <span class="hidden sm:inline">Akun IG</span>
+          <button type="button" onclick="openAddAccountModal()" class="inline-flex items-center gap-1.5 text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-2 rounded-xl">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i><span class="hidden sm:inline">Akun IG</span>
           </button>
-
           <div class="flex items-center gap-2.5 pl-2.5 border-l border-slate-200">
-            <div id="header-user-avatar" class="w-8 h-8 rounded-full brand-bg flex items-center justify-center font-bold text-xs transition-colors">
-              SA
-            </div>
+            <div id="header-user-avatar" class="w-8 h-8 rounded-full brand-bg flex items-center justify-center font-bold text-xs">SA</div>
             <div class="hidden md:block text-left">
               <p id="header-user-name" class="text-xs font-bold text-slate-800 leading-none">Admin Mabes</p>
               <p id="header-user-role" class="text-[11px] text-slate-400 mt-0.5">@socmedadmin</p>
@@ -206,24 +117,21 @@
         </div>
       </header>
 
-      <!-- ========================================== -->
-      <!-- TAB 1: DASHBOARD ANALYTICS                 -->
-      <!-- ========================================== -->
+      <!-- TAB 1: DASHBOARD -->
       <section id="tab-dashboard" class="p-6 space-y-6">
-        <!-- Title Bar -->
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
             <div class="flex items-center gap-2.5">
-              <h1 id="dashboard-main-title" class="text-2xl font-extrabold text-slate-900 tracking-tight">Social Media Analytics</h1>
+              <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Social Media Analytics</h1>
               <span id="dashboard-brand-badge" class="hidden text-xs font-bold px-3 py-1 rounded-full brand-bg-soft"></span>
             </div>
-            <p class="text-sm text-slate-500 mt-0.5">Monitor reach, engagement, dan pertumbuhan semua akun Instagram dalam satu tampilan.</p>
+            <p class="text-sm text-slate-500 mt-0.5">Monitor reach, engagement, dan pertumbuhan semua akun Instagram.</p>
           </div>
           <div class="flex items-center gap-2.5">
-            <button type="button" onclick="syncInstagramData()" class="inline-flex items-center gap-2 px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl shadow-sm transition">
+            <button type="button" onclick="syncInstagramData()" class="inline-flex items-center gap-2 px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl shadow-sm">
               <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Sync Data
             </button>
-            <button type="button" onclick="exportCSV()" class="inline-flex items-center gap-2 px-3.5 py-2 brand-bg text-xs font-semibold rounded-xl shadow-sm transition hover:opacity-90">
+            <button type="button" onclick="exportCSV()" class="inline-flex items-center gap-2 px-3.5 py-2 brand-bg text-xs font-semibold rounded-xl shadow-sm">
               <i data-lucide="download" class="w-3.5 h-3.5"></i> Export CSV
             </button>
           </div>
@@ -231,141 +139,40 @@
 
         <!-- 4 KPI CARDS -->
         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
-          <!-- KPI 1 -->
           <div class="soft-card p-5">
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-xs font-semibold text-slate-500">Total Followers</span>
-              <div class="w-8 h-8 rounded-lg brand-bg-soft flex items-center justify-center transition-colors">
-                <i data-lucide="users" class="w-4 h-4"></i>
-              </div>
-            </div>
-            <div class="flex items-end justify-between">
-              <div>
-                <h2 id="kpi-followers" class="text-2xl font-extrabold text-slate-900">241,870</h2>
-                <div class="flex items-center gap-1.5 mt-1.5">
-                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600">+11.4%</span>
-                  <span class="text-[11px] text-slate-400">vs bulan lalu</span>
-                </div>
-              </div>
-              <div class="flex items-end gap-1 h-8">
-                <span class="w-1.5 h-3 brand-bg opacity-30 rounded-full"></span>
-                <span class="w-1.5 h-5 brand-bg opacity-50 rounded-full"></span>
-                <span class="w-1.5 h-4 brand-bg opacity-70 rounded-full"></span>
-                <span class="w-1.5 h-7 brand-bg rounded-full"></span>
-                <span class="w-1.5 h-6 brand-bg opacity-85 rounded-full"></span>
-              </div>
-            </div>
+            <span class="text-xs font-semibold text-slate-500 block mb-2">Total Followers</span>
+            <h2 id="kpi-followers" class="text-2xl font-extrabold text-slate-900">241,870</h2>
+            <span class="inline-block mt-2 text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600">+11.4% vs bulan lalu</span>
           </div>
-
-          <!-- KPI 2 -->
           <div class="soft-card p-5">
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-xs font-semibold text-slate-500">Total Engagement</span>
-              <div class="w-8 h-8 rounded-lg brand-bg-soft flex items-center justify-center transition-colors">
-                <i data-lucide="heart" class="w-4 h-4"></i>
-              </div>
-            </div>
-            <div class="flex items-end justify-between">
-              <div>
-                <h2 id="kpi-engagement" class="text-2xl font-extrabold text-slate-900">63,410</h2>
-                <div class="flex items-center gap-1.5 mt-1.5">
-                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600">+7.2%</span>
-                  <span class="text-[11px] text-slate-400">vs bulan lalu</span>
-                </div>
-              </div>
-              <div class="flex items-end gap-1 h-8">
-                <span class="w-1.5 h-4 brand-bg opacity-30 rounded-full"></span>
-                <span class="w-1.5 h-6 brand-bg opacity-65 rounded-full"></span>
-                <span class="w-1.5 h-5 brand-bg opacity-45 rounded-full"></span>
-                <span class="w-1.5 h-8 brand-bg rounded-full"></span>
-                <span class="w-1.5 h-6 brand-bg opacity-80 rounded-full"></span>
-              </div>
-            </div>
+            <span class="text-xs font-semibold text-slate-500 block mb-2">Total Engagement</span>
+            <h2 id="kpi-engagement" class="text-2xl font-extrabold text-slate-900">63,410</h2>
+            <span class="inline-block mt-2 text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600">+7.2% vs bulan lalu</span>
           </div>
-
-          <!-- KPI 3 -->
           <div class="soft-card p-5">
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-xs font-semibold text-slate-500">Total Reach</span>
-              <div class="w-8 h-8 rounded-lg brand-bg-soft flex items-center justify-center transition-colors">
-                <i data-lucide="radio" class="w-4 h-4"></i>
-              </div>
-            </div>
-            <div class="flex items-end justify-between">
-              <div>
-                <h2 id="kpi-reach" class="text-2xl font-extrabold text-slate-900">2.4M</h2>
-                <div class="flex items-center gap-1.5 mt-1.5">
-                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600">+14.8%</span>
-                  <span class="text-[11px] text-slate-400">vs bulan lalu</span>
-                </div>
-              </div>
-              <div class="flex items-end gap-1 h-8">
-                <span class="w-1.5 h-3 brand-bg opacity-30 rounded-full"></span>
-                <span class="w-1.5 h-4 brand-bg opacity-50 rounded-full"></span>
-                <span class="w-1.5 h-6 brand-bg opacity-70 rounded-full"></span>
-                <span class="w-1.5 h-7 brand-bg opacity-85 rounded-full"></span>
-                <span class="w-1.5 h-8 brand-bg rounded-full"></span>
-              </div>
-            </div>
+            <span class="text-xs font-semibold text-slate-500 block mb-2">Total Reach</span>
+            <h2 id="kpi-reach" class="text-2xl font-extrabold text-slate-900">2.4M</h2>
+            <span class="inline-block mt-2 text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600">+14.8% vs bulan lalu</span>
           </div>
-
-          <!-- KPI 4 -->
           <div class="soft-card p-5">
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-xs font-semibold text-slate-500">Total Views / Impressions</span>
-              <div class="w-8 h-8 rounded-lg brand-bg-soft flex items-center justify-center transition-colors">
-                <i data-lucide="eye" class="w-4 h-4"></i>
-              </div>
-            </div>
-            <div class="flex items-end justify-between">
-              <div>
-                <h2 id="kpi-impressions" class="text-2xl font-extrabold text-slate-900">5.1M</h2>
-                <div class="flex items-center gap-1.5 mt-1.5">
-                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600">+9.5%</span>
-                  <span class="text-[11px] text-slate-400">vs bulan lalu</span>
-                </div>
-              </div>
-              <div class="flex items-end gap-1 h-8">
-                <span class="w-1.5 h-5 brand-bg opacity-40 rounded-full"></span>
-                <span class="w-1.5 h-4 brand-bg opacity-55 rounded-full"></span>
-                <span class="w-1.5 h-7 brand-bg opacity-80 rounded-full"></span>
-                <span class="w-1.5 h-6 brand-bg opacity-65 rounded-full"></span>
-                <span class="w-1.5 h-8 brand-bg rounded-full"></span>
-              </div>
-            </div>
+            <span class="text-xs font-semibold text-slate-500 block mb-2">Total Views / Impressions</span>
+            <h2 id="kpi-impressions" class="text-2xl font-extrabold text-slate-900">5.1M</h2>
+            <span class="inline-block mt-2 text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600">+9.5% vs bulan lalu</span>
           </div>
         </div>
 
         <!-- CHARTS ROW -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          <!-- Follower Growth -->
           <div class="soft-card p-5 lg:col-span-5">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="font-bold text-slate-800 text-sm">Follower Growth</h3>
-              <span class="text-xs font-medium text-slate-400 bg-slate-50 px-2.5 py-1 rounded-lg">6 Bulan Terakhir</span>
-            </div>
-            <div class="h-52">
-              <canvas id="growthChart"></canvas>
-            </div>
+            <h3 class="font-bold text-slate-800 text-sm mb-4">Follower Growth</h3>
+            <div class="h-52"><canvas id="growthChart"></canvas></div>
           </div>
-
-          <!-- Age Demographics -->
           <div class="soft-card p-5 lg:col-span-4">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="font-bold text-slate-800 text-sm">Age Demographics</h3>
-              <span class="text-xs font-medium text-slate-400 bg-slate-50 px-2.5 py-1 rounded-lg">Audience</span>
-            </div>
-            <div class="h-52">
-              <canvas id="demoChart"></canvas>
-            </div>
+            <h3 class="font-bold text-slate-800 text-sm mb-4">Age Demographics</h3>
+            <div class="h-52"><canvas id="demoChart"></canvas></div>
           </div>
-
-          <!-- Audience Sentiment -->
           <div class="soft-card p-5 lg:col-span-3 flex flex-col justify-between">
-            <div class="flex items-center justify-between">
-              <h3 class="font-bold text-slate-800 text-sm">Comment Sentiment</h3>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded brand-bg-soft">AI Powered</span>
-            </div>
+            <h3 class="font-bold text-slate-800 text-sm">Comment Sentiment</h3>
             <div class="relative h-36 flex items-center justify-center my-2">
               <canvas id="sentimentChart"></canvas>
               <div class="absolute bottom-3 text-center">
@@ -373,31 +180,19 @@
                 <p class="text-[11px] font-semibold text-slate-400">Positive</p>
               </div>
             </div>
-            <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100 text-center">
-              <div>
-                <p class="text-xs font-bold text-slate-800">68%</p>
-                <p class="text-[10px] brand-text font-semibold">● Positive</p>
-              </div>
-              <div>
-                <p class="text-xs font-bold text-slate-800">21%</p>
-                <p class="text-[10px] text-sky-400 font-semibold">● Neutral</p>
-              </div>
-              <div>
-                <p class="text-xs font-bold text-slate-800">11%</p>
-                <p class="text-[10px] text-slate-400 font-semibold">● Negative</p>
-              </div>
+            <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100 text-center text-xs font-bold">
+              <div><p>68%</p><p class="text-[10px] brand-text">Positive</p></div>
+              <div><p>21%</p><p class="text-[10px] text-sky-400">Neutral</p></div>
+              <div><p>11%</p><p class="text-[10px] text-slate-400">Negative</p></div>
             </div>
           </div>
         </div>
 
-        <!-- BOTTOM ROW: ACCOUNT BREAKDOWN & HEATMAP -->
+        <!-- ACCOUNT BREAKDOWN & HEATMAP -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
           <div class="soft-card p-5 lg:col-span-7 overflow-x-auto">
             <div class="flex items-center justify-between mb-4">
-              <div>
-                <h3 class="font-bold text-slate-800 text-sm">Instagram Account Breakdown</h3>
-                <p class="text-xs text-slate-400">Klik baris akun untuk melihat data & mengubah warna tema brand</p>
-              </div>
+              <h3 class="font-bold text-slate-800 text-sm">Instagram Account Breakdown</h3>
               <button type="button" onclick="openAddAccountModal()" class="text-xs font-bold brand-text hover:underline">+ Tambah Akun</button>
             </div>
             <table class="w-full text-left border-collapse">
@@ -410,39 +205,25 @@
                   <th class="py-2.5 px-3 text-right">Tema</th>
                 </tr>
               </thead>
-              <tbody id="accounts-table-body" class="divide-y divide-slate-50 text-sm">
-              </tbody>
+              <tbody id="accounts-table-body" class="divide-y divide-slate-50 text-sm"></tbody>
             </table>
           </div>
-
           <div class="soft-card p-5 lg:col-span-5 flex flex-col justify-between">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="font-bold text-slate-800 text-sm">Most Active Time</h3>
-              <span class="text-xs text-slate-400">Jam Terbaik Posting</span>
-            </div>
-            <div id="heatmap-grid" class="grid grid-cols-8 gap-1.5 my-2">
-            </div>
+            <h3 class="font-bold text-slate-800 text-sm mb-3">Most Active Time</h3>
+            <div id="heatmap-grid" class="grid grid-cols-8 gap-1.5 my-2"></div>
             <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
-              <div>
-                <p class="text-slate-400 text-[11px]">Peak Window</p>
-                <p class="font-bold text-slate-800">19:00 – 21:30 WIB</p>
-              </div>
-              <div class="text-right">
-                <p class="text-slate-400 text-[11px]">Avg. Reach Boost</p>
-                <p class="font-bold brand-text">+34% Higher</p>
-              </div>
+              <div><p class="text-slate-400 text-[11px]">Peak Window</p><p class="font-bold text-slate-800">19:00 – 21:30 WIB</p></div>
+              <div class="text-right"><p class="text-slate-400 text-[11px]">Avg. Reach Boost</p><p class="font-bold brand-text">+34% Higher</p></div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ========================================== -->
-      <!-- TAB 2: AI PLAYGROUND & CREATE POST         -->
-      <!-- ========================================== -->
+      <!-- TAB 2: AI PLAYGROUND & CREATE POST -->
       <section id="tab-ai-post" class="hidden p-6 space-y-6">
         <div>
           <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">AI Playground & Content Scheduler</h1>
-          <p class="text-sm text-slate-500 mt-0.5">Buat caption otomatis dengan Gemini AI dan jadwalkan Feed, Reels, atau Story.</p>
+          <p class="text-sm text-slate-500 mt-0.5">Buat caption otomatis dengan Gemini AI dan upload media langsung dari PC.</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -450,8 +231,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Pilih Akun Target</label>
-                <select id="post-account" onchange="updatePreview()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:outline-none">
-                </select>
+                <select id="post-account" onchange="updatePreview()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium"></select>
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Format Konten</label>
@@ -463,7 +243,7 @@
               </div>
             </div>
 
-            <!-- Gemini AI Caption Box -->
+            <!-- GEMINI AI CAPTION GENERATOR -->
             <div class="p-4 rounded-2xl brand-bg-soft border border-slate-200/60 space-y-3">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-extrabold brand-text flex items-center gap-1.5">
@@ -472,57 +252,57 @@
                 <select id="ai-tone" class="text-xs bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-700 font-semibold">
                   <option value="Santai & Engaging">Gaya: Santai & Engaging</option>
                   <option value="Profesional & Elegan">Gaya: Profesional & Elegan</option>
-                  <option value="Promo & Hard-Selling">Gaya: Promo & CTA Kuat</option>
+                  <option value="Promo & CTA Kuat">Gaya: Promo & CTA Kuat</option>
                   <option value="Storytelling">Gaya: Storytelling</option>
                 </select>
               </div>
               <div class="flex gap-2">
-                <input type="text" id="ai-prompt" placeholder="Contoh: Promo staycation akhir pekan diskon 20%..." class="flex-1 bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-800 focus:outline-none">
-                <button type="button" onclick="generateGeminiCaption()" id="btn-generate-ai" class="px-4 py-2 brand-bg text-xs font-bold rounded-xl shrink-0 transition hover:opacity-90">
-                  Generate
-                </button>
+                <input type="text" id="ai-prompt" placeholder="Contoh: Promo kopi 1 rupiah khusus hari ini..." class="flex-1 bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-800">
+                <button type="button" onclick="generateGeminiCaption()" id="btn-generate-ai" class="px-4 py-2 brand-bg text-xs font-bold rounded-xl shrink-0">Generate</button>
               </div>
-              <div id="ai-suggestions" class="hidden space-y-2 pt-2">
-              </div>
+              <div id="ai-suggestions" class="hidden space-y-2 pt-2"></div>
             </div>
 
+            <!-- CAPTION EDITOR -->
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1.5">Caption Postingan</label>
-              <textarea id="post-caption" rows="4" onkeyup="updatePreview()" placeholder="Tulis caption atau klik Generate dari Gemini AI di atas..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm focus:outline-none"></textarea>
+              <textarea id="post-caption" rows="4" onkeyup="updatePreview()" placeholder="Tulis caption atau klik Generate dari Gemini AI di atas..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm"></textarea>
             </div>
 
+            <!-- UPLOAD FILE LOKAL DARI PC + JADWAL -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1.5">URL Gambar / Video (Cloudinary)</label>
-                <input type="url" id="post-media-url" onkeyup="updatePreview()" placeholder="https://res.cloudinary.com/..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none">
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Upload Media dari PC (Gambar / Video)</label>
+                <label class="flex items-center justify-center gap-2 w-full bg-slate-50 hover:bg-slate-100 border border-dashed border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-700 cursor-pointer transition">
+                  <i data-lucide="upload" class="w-4 h-4 brand-text"></i>
+                  <span id="local-file-label" class="truncate">Pilih File Foto / Video...</span>
+                  <input type="file" id="post-local-file" accept="image/*,video/*" onchange="handleLocalFileSelect(event)" class="hidden">
+                </label>
+                <input type="hidden" id="post-media-url">
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Jadwal Tayang</label>
-                <input type="datetime-local" id="post-schedule-time" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none">
+                <input type="datetime-local" id="post-schedule-time" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm">
               </div>
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-2">
-              <button type="button" onclick="saveScheduledPost('Draft')" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition">
-                Simpan Draft
-              </button>
-              <button type="button" onclick="saveScheduledPost('Scheduled')" class="px-5 py-2.5 brand-bg text-xs font-bold rounded-xl shadow-md transition hover:opacity-90">
-                Jadwalkan Postingan
-              </button>
+              <button type="button" onclick="saveScheduledPost('Draft')" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl">Simpan Draft</button>
+              <button type="button" onclick="saveScheduledPost('Scheduled')" class="px-5 py-2.5 brand-bg text-xs font-bold rounded-xl shadow-md">Jadwalkan Postingan</button>
             </div>
           </div>
 
-          <!-- Mobile Preview Kanan -->
+          <!-- MOBILE PREVIEW -->
           <div class="soft-card p-6 lg:col-span-5 flex flex-col items-center justify-center bg-slate-50/50">
             <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Live Mobile Preview (<span id="preview-type-label">Feed</span>)</p>
             <div class="w-72 bg-white rounded-[32px] border-4 border-slate-800 shadow-xl overflow-hidden">
-              <div id="preview-ig-header" class="px-3.5 py-2.5 flex items-center gap-2 border-b border-slate-100 transition-colors">
+              <div id="preview-ig-header" class="px-3.5 py-2.5 flex items-center gap-2 border-b border-slate-100">
                 <div id="preview-avatar-ring" class="w-7 h-7 rounded-full p-0.5 brand-bg">
                   <div class="w-full h-full bg-white rounded-full flex items-center justify-center text-[10px] font-bold text-slate-800">IG</div>
                 </div>
                 <div>
                   <p id="preview-username" class="text-xs font-bold text-slate-800 leading-none">@brand_account</p>
-                  <p class="text-[10px] text-slate-400">Original Audio • Brand</p>
+                  <p class="text-[10px] text-slate-400">Original Audio &bull; Brand</p>
                 </div>
               </div>
               <div id="preview-media-box" class="w-full h-64 bg-slate-100 flex flex-col items-center justify-center text-slate-400 overflow-hidden relative">
@@ -545,20 +325,12 @@
         </div>
       </section>
 
-      <!-- ========================================== -->
-      <!-- TAB 3: CONTENT CALENDAR                    -->
-      <!-- ========================================== -->
+      <!-- TAB 3: CONTENT CALENDAR -->
       <section id="tab-calendar" class="hidden p-6 space-y-6">
         <div class="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Content Calendar</h1>
-            <p class="text-sm text-slate-500 mt-0.5">Daftar antrean konten terjadwal untuk semua akun Instagram.</p>
-          </div>
-          <button type="button" onclick="switchTab('ai-post')" class="px-4 py-2 brand-bg text-xs font-bold rounded-xl shadow-sm hover:opacity-90 transition">
-            + Buat Jadwal Baru
-          </button>
+          <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Content Calendar</h1>
+          <button type="button" onclick="switchTab('ai-post')" class="px-4 py-2 brand-bg text-xs font-bold rounded-xl shadow-sm">+ Buat Jadwal Baru</button>
         </div>
-
         <div class="soft-card p-5 overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
@@ -571,61 +343,28 @@
                 <th class="py-3 px-4 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody id="schedule-table-body" class="divide-y divide-slate-100 text-sm">
-            </tbody>
+            <tbody id="schedule-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
           </table>
         </div>
       </section>
 
-      <!-- ========================================== -->
-      <!-- TAB 4: API, TEAM USERS & SETTINGS          -->
-      <!-- ========================================== -->
+      <!-- TAB 4: SETTINGS -->
       <section id="tab-settings" class="hidden p-6 space-y-6">
         <div>
           <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Settings, Team Access & API</h1>
-          <p class="text-sm text-slate-500 mt-0.5">Kelola akun login tim, kustomisasi warna brand, dan integrasi API gratis.</p>
+          <p class="text-sm text-slate-500 mt-0.5">Kelola akun login tim dan masukkan API Key Gemini / Instagram / Cloudinary.</p>
         </div>
 
-        <!-- MANAJEMEN AKUN LOGIN TIM -->
+        <!-- TEAM ACCESS -->
         <div class="soft-card p-6 space-y-5">
-          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl brand-bg-soft flex items-center justify-center">
-                <i data-lucide="shield-check" class="w-5 h-5"></i>
-              </div>
-              <div>
-                <h3 class="font-bold text-slate-800 text-base">Manajemen Akun Pengguna (Team Access)</h3>
-                <p class="text-xs text-slate-400">Hanya pengguna yang terdaftar di bawah ini yang dapat login ke Mabes Social Media Dashboard.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Form Tambah User Baru -->
-          <form onsubmit="addTeamUser(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 mb-1">Nama Profil</label>
-              <input type="text" id="new-user-name" required placeholder="Contoh: Rina Putri" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs">
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 mb-1">Jabatan / Role</label>
-              <input type="text" id="new-user-role" placeholder="Content Creator" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs">
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 mb-1">Username Login</label>
-              <input type="text" id="new-user-username" required placeholder="rinaputri" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs">
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-600 mb-1">Password Login</label>
-              <input type="text" id="new-user-password" required placeholder="Minimal 6 karakter" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs">
-            </div>
-            <div class="flex items-end">
-              <button type="submit" class="w-full py-2 px-4 brand-bg text-xs font-bold rounded-xl shadow-sm hover:opacity-90 transition">
-                + Tambah User
-              </button>
-            </div>
+          <h3 class="font-bold text-slate-800 text-base">Manajemen Akun Pengguna (Team Access)</h3>
+          <form onsubmit="addTeamUser(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 bg-slate-50 p-4 rounded-2xl">
+            <input type="text" id="new-user-name" required placeholder="Nama Profil" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs">
+            <input type="text" id="new-user-role" placeholder="Jabatan (Creator/Designer)" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs">
+            <input type="text" id="new-user-username" required placeholder="Username Login" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs">
+            <input type="text" id="new-user-password" required placeholder="Password Login" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs">
+            <button type="submit" class="py-2 px-4 brand-bg text-xs font-bold rounded-xl">+ Tambah User</button>
           </form>
-
-          <!-- Tabel Daftar User -->
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
               <thead>
@@ -637,202 +376,104 @@
                   <th class="py-2.5 px-3 text-right">Aksi</th>
                 </tr>
               </thead>
-              <tbody id="team-users-table-body" class="divide-y divide-slate-100 text-xs">
-              </tbody>
+              <tbody id="team-users-table-body" class="divide-y divide-slate-100 text-xs"></tbody>
             </table>
           </div>
         </div>
 
-        <!-- API CONFIGURATION CARDS -->
+        <!-- API CARDS -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="soft-card p-6 space-y-4">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                <i data-lucide="sparkles" class="w-5 h-5"></i>
-              </div>
-              <div>
-                <h3 class="font-bold text-slate-800 text-base">Google Gemini API (Gratis)</h3>
-                <p class="text-xs text-slate-400">Untuk generator caption otomatis di AI Playground</p>
-              </div>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1.5">Gemini API Key (AIzaSy...)</label>
-              <input type="password" id="cfg-gemini-key" placeholder="Tempel API Key dari aistudio.google.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm">
-            </div>
+          <div class="soft-card p-6 space-y-3">
+            <h3 class="font-bold text-slate-800 text-base">Google Gemini API Key</h3>
+            <input type="password" id="cfg-gemini-key" placeholder="AIzaSy..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm">
           </div>
-
-          <div class="soft-card p-6 space-y-4">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center">
-                <i data-lucide="instagram" class="w-5 h-5"></i>
-              </div>
-              <div>
-                <h3 class="font-bold text-slate-800 text-base">Meta Instagram Graph API (Gratis)</h3>
-                <p class="text-xs text-slate-400">Untuk menarik insight asli & auto-publish konten</p>
-              </div>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1.5">Long-Lived Access Token</label>
-              <input type="password" id="cfg-ig-token" placeholder="Tempel Access Token dari developers.facebook.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm">
-            </div>
+          <div class="soft-card p-6 space-y-3">
+            <h3 class="font-bold text-slate-800 text-base">Meta Instagram Graph API Token</h3>
+            <input type="password" id="cfg-ig-token" placeholder="EAABsbCS..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm">
           </div>
-
-          <div class="soft-card p-6 space-y-4 lg:col-span-2">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                <i data-lucide="cloud-upload" class="w-5 h-5"></i>
-              </div>
-              <div>
-                <h3 class="font-bold text-slate-800 text-base">Auto-Scheduler Webhook & Cloudinary</h3>
-                <p class="text-xs text-slate-400">Opsional: URL Web App Google Apps Script untuk menjalankan jadwal saat browser ditutup</p>
-              </div>
-            </div>
+          <div class="soft-card p-6 space-y-3 lg:col-span-2">
+            <h3 class="font-bold text-slate-800 text-base">Auto-Upload Cloudinary (Opsional untuk Auto-Post dari File Lokal)</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1.5">Google Apps Script Webhook URL</label>
-                <input type="url" id="cfg-webhook-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm">
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1.5">Cloudinary Cloud Name</label>
-                <input type="text" id="cfg-cloudinary-name" placeholder="Contoh: dxyz123abc" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm">
-              </div>
+              <input type="text" id="cfg-cloudinary-name" placeholder="Cloudinary Cloud Name (contoh: dxyz123)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm">
+              <input type="text" id="cfg-cloudinary-preset" placeholder="Unsigned Upload Preset (contoh: mabes_preset)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm">
             </div>
           </div>
         </div>
 
         <div class="flex justify-end">
-          <button type="button" onclick="saveSettings()" class="px-6 py-3 brand-bg text-xs font-bold rounded-xl shadow-md transition hover:opacity-90">
-            Simpan Semua Konfigurasi API
-          </button>
+          <button type="button" onclick="saveSettings()" class="px-6 py-3 brand-bg text-xs font-bold rounded-xl shadow-md">Simpan Semua Konfigurasi</button>
         </div>
       </section>
-
     </main>
   </div>
 
-  <!-- ========================================== -->
-  <!-- MODAL TAMBAH AKUN IG                       -->
-  <!-- ========================================== -->
-  <div id="modal-add-account" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+  <!-- MODAL TAMBAH AKUN -->
+  <div id="modal-add-account" class="hidden fixed inset-0 bg-slate-900/40 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-      <div class="flex items-center justify-between">
-        <h3 class="font-bold text-slate-900 text-base">Tambah Akun Instagram</h3>
-        <button type="button" onclick="closeAddAccountModal()" class="text-slate-400 hover:text-slate-600">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+      <h3 class="font-bold text-slate-900 text-base">Tambah Akun Instagram</h3>
+      <input type="text" id="new-acc-username" placeholder="@brandbaru" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm">
+      <div class="flex items-center gap-2">
+        <input type="color" id="new-acc-color" value="#1E3A8A" oninput="document.getElementById('new-acc-color-hex').value = this.value" class="w-11 h-10 rounded-xl border border-slate-200">
+        <input type="text" id="new-acc-color-hex" value="#1E3A8A" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm font-mono">
       </div>
-      <div class="space-y-3">
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Username Instagram</label>
-          <input type="text" id="new-acc-username" placeholder="@brandbaru" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm">
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Warna Identitas Brand (Custom Color)</label>
-          <div class="flex items-center gap-2.5">
-            <input type="color" id="new-acc-color" value="#1E3A8A" oninput="document.getElementById('new-acc-color-hex').value = this.value" class="w-11 h-10 rounded-xl border border-slate-200 cursor-pointer p-1 bg-white">
-            <input type="text" id="new-acc-color-hex" value="#1E3A8A" oninput="document.getElementById('new-acc-color').value = this.value" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm font-mono uppercase">
-          </div>
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">IG User ID (Opsional / Graph API)</label>
-          <input type="text" id="new-acc-id" placeholder="17841400000000" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm">
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Followers Awal</label>
-            <input type="number" id="new-acc-followers" value="15400" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Reach Bulanan</label>
-            <input type="number" id="new-acc-reach" value="120000" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm">
-          </div>
-        </div>
-      </div>
-      <div class="flex justify-end gap-2 pt-2">
-        <button type="button" onclick="closeAddAccountModal()" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 rounded-xl">Batal</button>
-        <button type="button" onclick="addNewAccount()" class="px-4 py-2 text-xs font-bold brand-bg rounded-xl">Simpan Akun</button>
+      <div class="flex justify-end gap-2">
+        <button type="button" onclick="document.getElementById('modal-add-account').classList.add('hidden')" class="px-4 py-2 text-xs font-bold bg-slate-100 rounded-xl">Batal</button>
+        <button type="button" onclick="addNewAccount()" class="px-4 py-2 text-xs font-bold brand-bg rounded-xl">Simpan</button>
       </div>
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- MODAL CUSTOMIZE WARNA PER AKUN             -->
-  <!-- ========================================== -->
-  <div id="modal-theme-color" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+  <!-- MODAL CUSTOMIZE WARNA -->
+  <div id="modal-theme-color" class="hidden fixed inset-0 bg-slate-900/40 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-      <div class="flex items-center justify-between">
-        <div>
-          <h3 class="font-bold text-slate-900 text-base">Customize Brand Color Palette</h3>
-          <p class="text-xs text-slate-400">Atur warna khas tiap akun agar mudah dibedakan</p>
-        </div>
-        <button type="button" onclick="closeThemeModal()" class="text-slate-400 hover:text-slate-600">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+      <h3 class="font-bold text-slate-900 text-base">Customize Brand Color</h3>
+      <select id="theme-account-select" onchange="loadSelectedAccountColor()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-bold"></select>
+      <div class="flex flex-wrap gap-2">
+        <button type="button" onclick="setPresetColor('#1E3A8A')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold text-white" style="background:#1E3A8A">Navy</button>
+        <button type="button" onclick="setPresetColor('#DC2626')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold text-white" style="background:#DC2626">Merah</button>
+        <button type="button" onclick="setPresetColor('#78350F')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold text-white" style="background:#78350F">Kopi</button>
+        <button type="button" onclick="setPresetColor('#DB2777')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold text-white" style="background:#DB2777">Pink</button>
       </div>
-
-      <div class="space-y-4">
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Pilih Akun Instagram</label>
-          <select id="theme-account-select" onchange="loadSelectedAccountColor()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-bold">
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1.5">Preset Cepat</label>
-          <div class="flex flex-wrap gap-2">
-            <button type="button" onclick="setPresetColor('#1E3A8A')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold text-white" style="background:#1E3A8A">Navy (Braga)</button>
-            <button type="button" onclick="setPresetColor('#DC2626')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold text-white" style="background:#DC2626">Merah (Southgate)</button>
-            <button type="button" onclick="setPresetColor('#78350F')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold text-white" style="background:#78350F">Kopi (Arrah)</button>
-            <button type="button" onclick="setPresetColor('#DB2777')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold text-white" style="background:#DB2777">Pink (Beauty)</button>
-            <button type="button" onclick="setPresetColor('#059669')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold text-white" style="background:#059669">Emerald</button>
-            <button type="button" onclick="setPresetColor('#0F172A')" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold text-white" style="background:#0F172A">Midnight</button>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Custom Color Picker / Hex</label>
-          <div class="flex items-center gap-3">
-            <input type="color" id="theme-color-picker" value="#1E3A8A" oninput="document.getElementById('theme-color-hex').value = this.value" class="w-12 h-11 rounded-xl border border-slate-200 cursor-pointer p-1 bg-white">
-            <input type="text" id="theme-color-hex" value="#1E3A8A" oninput="document.getElementById('theme-color-picker').value = this.value" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-mono uppercase">
-          </div>
-        </div>
+      <div class="flex items-center gap-3">
+        <input type="color" id="theme-color-picker" value="#1E3A8A" oninput="document.getElementById('theme-color-hex').value = this.value" class="w-12 h-11 rounded-xl border border-slate-200">
+        <input type="text" id="theme-color-hex" value="#1E3A8A" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-mono">
       </div>
-
-      <div class="flex justify-end gap-2 pt-2">
-        <button type="button" onclick="closeThemeModal()" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 rounded-xl">Tutup</button>
-        <button type="button" onclick="saveAccountThemeColor()" class="px-4 py-2 text-xs font-bold brand-bg rounded-xl">Terapkan Warna</button>
+      <div class="flex justify-end gap-2">
+        <button type="button" onclick="document.getElementById('modal-theme-color').classList.add('hidden')" class="px-4 py-2 text-xs font-bold bg-slate-100 rounded-xl">Tutup</button>
+        <button type="button" onclick="saveAccountThemeColor()" class="px-4 py-2 text-xs font-bold brand-bg rounded-xl">Terapkan</button>
       </div>
     </div>
   </div>
 
-  <!-- TOAST NOTIFICATION -->
-  <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50">
-    Notifikasi
-  </div>
+  <!-- TOAST -->
+  <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50"></div>
 
   <script>
-    // ==========================================
-    // 1. AUTHENTICATION & TEAM USERS MANAGEMENT
-    // ==========================================
-    const defaultUsers = [
-      { id: 'u_admin', name: 'Admin Mabes', role: 'Super Admin', username: 'socmedadmin', password: 'socmed88', isDefault: true }
-    ];
-
+    const defaultUsers = [{ id: 'u_admin', name: 'Admin Mabes', role: 'Super Admin', username: 'socmedadmin', password: 'socmed88', isDefault: true }];
     let teamUsers = JSON.parse(localStorage.getItem('mabes_team_users')) || defaultUsers;
-    // Pastikan akun default socmedadmin selalu tersedia
-    if (!teamUsers.some(u => u.username === 'socmedadmin')) {
-      teamUsers.unshift(defaultUsers[0]);
-      localStorage.setItem('mabes_team_users', JSON.stringify(teamUsers));
-    }
+    if (!teamUsers.some(u => u.username === 'socmedadmin')) { teamUsers.unshift(defaultUsers[0]); }
+
+    const defaultAccounts = [
+      { id: 'acc1', username: '@bragahotel.pwt', color: '#1E3A8A', followers: 94200, engagement: 27300, reach: 680000, impressions: 1450000 },
+      { id: 'acc2', username: '@southgateclub.id', color: '#DC2626', followers: 71500, engagement: 19800, reach: 910000, impressions: 1920000 },
+      { id: 'acc3', username: '@arrahpulang.coffee', color: '#78350F', followers: 48170, engagement: 9110, reach: 510000, impressions: 1120000 },
+      { id: 'acc4', username: '@albeautybar.pwt', color: '#DB2777', followers: 28000, engagement: 7200, reach: 300000, impressions: 610000 }
+    ];
+    let accounts = JSON.parse(localStorage.getItem('mabes_accounts')) || defaultAccounts;
+    let scheduledPosts = JSON.parse(localStorage.getItem('mabes_posts')) || [];
+    let currentActiveAccountId = 'all';
+    let currentPostType = 'Feed';
+    let localPreviewObjectUrl = null;
+    let localPreviewIsVideo = false;
+    let growthChartInstance = null, sentimentChartInstance = null;
 
     function checkAuthSession() {
-      const loggedInUser = JSON.parse(sessionStorage.getItem('mabes_current_user'));
-      if (loggedInUser) {
+      const user = JSON.parse(sessionStorage.getItem('mabes_current_user'));
+      if (user) {
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('app-container').classList.remove('hidden');
-        document.getElementById('header-user-name').innerText = loggedInUser.name;
-        document.getElementById('header-user-role').innerText = `@${loggedInUser.username} • ${loggedInUser.role || 'Team'}`;
-        document.getElementById('header-user-avatar').innerText = loggedInUser.name.substring(0, 2).toUpperCase();
+        document.getElementById('header-user-name').innerText = user.name;
+        document.getElementById('header-user-role').innerText = `@${user.username}`;
       } else {
         document.getElementById('login-screen').classList.remove('hidden');
         document.getElementById('app-container').classList.add('hidden');
@@ -841,431 +482,181 @@
 
     function handleLogin(e) {
       e.preventDefault();
-      const uname = document.getElementById('login-username').value.trim();
-      const pass = document.getElementById('login-password').value;
-      const errBox = document.getElementById('login-error');
-
-      const foundUser = teamUsers.find(u => u.username === uname && u.password === pass);
-      if (foundUser) {
-        errBox.classList.add('hidden');
-        sessionStorage.setItem('mabes_current_user', JSON.stringify(foundUser));
+      const u = document.getElementById('login-username').value.trim();
+      const p = document.getElementById('login-password').value;
+      const found = teamUsers.find(x => x.username === u && x.password === p);
+      if (found) {
+        sessionStorage.setItem('mabes_current_user', JSON.stringify(found));
         checkAuthSession();
-        showToast(`Selamat datang, ${foundUser.name}!`);
       } else {
-        errBox.classList.remove('hidden');
+        document.getElementById('login-error').classList.remove('hidden');
       }
     }
 
     function handleLogout() {
       sessionStorage.removeItem('mabes_current_user');
-      document.getElementById('login-password').value = '';
       checkAuthSession();
-      showToast('Berhasil logout.');
     }
 
-    function renderTeamUsersTable() {
-      const tbody = document.getElementById('team-users-table-body');
-      tbody.innerHTML = '';
-      teamUsers.forEach(user => {
-        tbody.innerHTML += `
-          <tr>
-            <td class="py-3 px-3 font-bold text-slate-800">${user.name}</td>
-            <td class="py-3 px-3 text-slate-600">${user.role || 'Member'}</td>
-            <td class="py-3 px-3 font-mono font-semibold text-slate-700">${user.username}</td>
-            <td class="py-3 px-3 font-mono text-slate-500">${user.password}</td>
-            <td class="py-3 px-3 text-right">
-              ${user.isDefault 
-                ? '<span class="text-[11px] font-bold text-slate-400">Default Admin</span>' 
-                : `<button type="button" onclick="deleteTeamUser('${user.id}')" class="text-rose-500 font-bold hover:underline">Hapus</button>`}
-            </td>
-          </tr>
-        `;
+    function switchTab(tabName) {
+      ['dashboard', 'ai-post', 'calendar', 'settings'].forEach(t => {
+        document.getElementById('tab-' + t).classList.add('hidden');
+        document.getElementById('nav-' + t).classList.remove('active');
       });
+      document.getElementById('tab-' + tabName).classList.remove('hidden');
+      document.getElementById('nav-' + tabName).classList.add('active');
     }
-
-    function addTeamUser(e) {
-      e.preventDefault();
-      const name = document.getElementById('new-user-name').value.trim();
-      const role = document.getElementById('new-user-role').value.trim() || 'Social Media Team';
-      const username = document.getElementById('new-user-username').value.trim();
-      const password = document.getElementById('new-user-password').value.trim();
-
-      if (teamUsers.some(u => u.username.toLowerCase() === username.toLowerCase())) {
-        showToast('Username sudah digunakan, pilih username lain!');
-        return;
-      }
-
-      teamUsers.push({
-        id: 'u_' + Date.now(),
-        name,
-        role,
-        username,
-        password,
-        isDefault: false
-      });
-      localStorage.setItem('mabes_team_users', JSON.stringify(teamUsers));
-      renderTeamUsersTable();
-      e.target.reset();
-      showToast(`Akun login untuk ${name} berhasil dibuat!`);
-    }
-
-    function deleteTeamUser(id) {
-      teamUsers = teamUsers.filter(u => u.id !== id);
-      localStorage.setItem('mabes_team_users', JSON.stringify(teamUsers));
-      renderTeamUsersTable();
-      showToast('Akun pengguna dihapus.');
-    }
-
-    // ==========================================
-    // 2. DATA AKUN IG & DYNAMIC THEME COLOR
-    // ==========================================
-    const DEFAULT_ALL_COLOR = '#4F46E5';
-
-    const defaultAccounts = [
-      { id: 'acc1', username: '@bragahotel.pwt', igUserId: '17841401', color: '#1E3A8A', followers: 94200, engagement: 27300, reach: 680000, impressions: 1450000, growth: '+13.2%' },
-      { id: 'acc2', username: '@southgateclub.id', igUserId: '17841402', color: '#DC2626', followers: 71500, engagement: 19800, reach: 910000, impressions: 1920000, growth: '+18.4%' },
-      { id: 'acc3', username: '@arrahpulang.coffee', igUserId: '17841403', color: '#78350F', followers: 48170, engagement: 9110, reach: 510000, impressions: 1120000, growth: '+8.7%' },
-      { id: 'acc4', username: '@albeautybar.pwt', igUserId: '17841404', color: '#DB2777', followers: 28000, engagement: 7200, reach: 300000, impressions: 610000, growth: '+6.1%' }
-    ];
-
-    let accounts = JSON.parse(localStorage.getItem('mabes_accounts')) || defaultAccounts;
-    let scheduledPosts = JSON.parse(localStorage.getItem('mabes_posts')) || [
-      { id: 1, datetime: '2026-11-24T19:00', account: '@bragahotel.pwt', type: 'Reels', caption: 'Staycation nyaman di pusat kota Purwokerto ✨ Booking sekarang lewat link di bio!', status: 'Scheduled' },
-      { id: 2, datetime: '2026-11-25T16:30', account: '@southgateclub.id', type: 'Feed', caption: 'Weekend Party alert! Siapkan energi terbaikmu malam ini 🔥', status: 'Scheduled' }
-    ];
-
-    let currentActiveAccountId = 'all';
-    let currentPostType = 'Feed';
-    let growthChartInstance = null;
-    let demoChartInstance = null;
-    let sentimentChartInstance = null;
 
     function hexToRgba(hex, alpha) {
-      let clean = hex.replace('#', '');
-      if (clean.length === 3) clean = clean.split('').map(c => c + c).join('');
-      const r = parseInt(clean.substring(0, 2), 16) || 79;
-      const g = parseInt(clean.substring(2, 4), 16) || 70;
-      const b = parseInt(clean.substring(4, 6), 16) || 229;
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      let c = hex.replace('#', '');
+      if (c.length === 3) c = c.split('').map(x => x + x).join('');
+      return `rgba(${parseInt(c.slice(0,2),16)||79}, ${parseInt(c.slice(2,4),16)||70}, ${parseInt(c.slice(4,6),16)||229}, ${alpha})`;
     }
 
-    function applyBrandTheme(hexColor, brandLabel) {
-      document.documentElement.style.setProperty('--brand-color', hexColor);
-      document.documentElement.style.setProperty('--brand-soft', hexToRgba(hexColor, 0.12));
-      document.getElementById('header-color-dot').style.backgroundColor = hexColor;
-      document.getElementById('sidebar-active-brand').innerText = brandLabel;
-
-      // Update warna chart jika sudah ter-render
+    function applyBrandTheme(hex, label) {
+      document.documentElement.style.setProperty('--brand-color', hex);
+      document.documentElement.style.setProperty('--brand-soft', hexToRgba(hex, 0.12));
+      document.getElementById('header-color-dot').style.backgroundColor = hex;
+      document.getElementById('sidebar-active-brand').innerText = label;
       if (growthChartInstance) {
-        growthChartInstance.data.datasets[0].backgroundColor = [
-          '#E2E8F0', '#E2E8F0', hexColor, '#E2E8F0', hexToRgba(hexColor, 0.55), hexColor
-        ];
+        growthChartInstance.data.datasets[0].backgroundColor = ['#E2E8F0', '#E2E8F0', hex, '#E2E8F0', hexToRgba(hex, 0.55), hex];
         growthChartInstance.update();
       }
       if (sentimentChartInstance) {
-        sentimentChartInstance.data.datasets[0].backgroundColor = [hexColor, '#38BDF8', '#E2E8F0'];
+        sentimentChartInstance.data.datasets[0].backgroundColor = [hex, '#38BDF8', '#E2E8F0'];
         sentimentChartInstance.update();
       }
-      renderHeatmap(hexColor);
+      renderHeatmap(hex);
     }
 
-    // ==========================================
-    // 3. NAVIGASI TAB
-    // ==========================================
-    function switchTab(tabName) {
-      const tabs = ['dashboard', 'ai-post', 'calendar', 'settings'];
-      tabs.forEach(t => {
-        const section = document.getElementById('tab-' + t);
-        const navBtn = document.getElementById('nav-' + t);
-        if (section) section.classList.add('hidden');
-        if (navBtn) navBtn.classList.remove('active');
-      });
-
-      const activeSection = document.getElementById('tab-' + tabName);
-      const activeNav = document.getElementById('nav-' + tabName);
-      if (activeSection) activeSection.classList.remove('hidden');
-      if (activeNav) activeNav.classList.add('active');
-    }
-
-    // ==========================================
-    // 4. RENDER UI & GRAFIK DASHBOARD
-    // ==========================================
-    function formatNumber(num) {
-      if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-      if (num >= 10000) return (num / 1000).toFixed(1) + 'k';
-      return num.toLocaleString('id-ID');
+    function renderHeatmap(baseColor = '#4F46E5') {
+      const opacities = [0.08, 0.22, 0.45, 0.72, 1];
+      let html = '';
+      for (let i = 0; i < 32; i++) {
+        html += `<div class="h-6 rounded-md" style="background-color: ${hexToRgba(baseColor, opacities[(i*7+3)%5])}"></div>`;
+      }
+      document.getElementById('heatmap-grid').innerHTML = html;
     }
 
     function populateAccountSelectors() {
-      const topSelect = document.getElementById('account-selector');
-      const postSelect = document.getElementById('post-account');
-      const themeSelect = document.getElementById('theme-account-select');
-      
-      topSelect.innerHTML = '<option value="all">Semua Akun (All Brands)</option>';
-      postSelect.innerHTML = '';
-      themeSelect.innerHTML = '';
-
-      accounts.forEach(acc => {
-        topSelect.innerHTML += `<option value="${acc.id}">${acc.username}</option>`;
-        postSelect.innerHTML += `<option value="${acc.username}">${acc.username}</option>`;
-        themeSelect.innerHTML += `<option value="${acc.id}">${acc.username}</option>`;
+      const top = document.getElementById('account-selector');
+      const post = document.getElementById('post-account');
+      const theme = document.getElementById('theme-account-select');
+      top.innerHTML = '<option value="all">Semua Akun (All Brands)</option>';
+      post.innerHTML = ''; theme.innerHTML = '';
+      accounts.forEach(a => {
+        top.innerHTML += `<option value="${a.id}">${a.username}</option>`;
+        post.innerHTML += `<option value="${a.username}">${a.username}</option>`;
+        theme.innerHTML += `<option value="${a.id}">${a.username}</option>`;
       });
-      topSelect.value = currentActiveAccountId;
       updatePreview();
     }
 
     function renderAccountsTable() {
       const tbody = document.getElementById('accounts-table-body');
-      const keyword = document.getElementById('global-search').value.toLowerCase();
+      const kw = document.getElementById('global-search').value.toLowerCase();
       tbody.innerHTML = '';
-
-      accounts
-        .filter(a => a.username.toLowerCase().includes(keyword))
-        .forEach(acc => {
-          const color = acc.color || '#4F46E5';
-          tbody.innerHTML += `
-            <tr onclick="changeActiveAccount('${acc.id}')" class="hover:bg-slate-50 cursor-pointer transition">
-              <td class="py-3 px-3 font-bold text-slate-800 flex items-center gap-2.5">
-                <span class="w-7 h-7 rounded-full text-white flex items-center justify-center text-xs font-extrabold shadow-xs" style="background-color: ${color}">
-                  ${acc.username.replace('@','')[0].toUpperCase()}
-                </span>
-                <span>${acc.username}</span>
-              </td>
-              <td class="py-3 px-3 font-semibold text-slate-700">${formatNumber(acc.followers)}</td>
-              <td class="py-3 px-3 text-slate-600">${formatNumber(acc.engagement)}</td>
-              <td class="py-3 px-3 text-slate-600">${formatNumber(acc.reach)}</td>
-              <td class="py-3 px-3 text-right">
-                <button type="button" onclick="event.stopPropagation(); openThemeModal('${acc.id}')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border border-slate-200 bg-white hover:bg-slate-50 text-slate-700" title="Ubah Warna Akun">
-                  <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${color}"></span>
-                  <span>Ubah</span>
-                </button>
-              </td>
-            </tr>
-          `;
-        });
+      accounts.filter(a => a.username.toLowerCase().includes(kw)).forEach(acc => {
+        tbody.innerHTML += `
+          <tr onclick="changeActiveAccount('${acc.id}')" class="hover:bg-slate-50 cursor-pointer">
+            <td class="py-3 px-3 font-bold text-slate-800 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full text-white flex items-center justify-center text-xs font-bold" style="background:${acc.color}">${acc.username[1].toUpperCase()}</span>
+              ${acc.username}
+            </td>
+            <td class="py-3 px-3 font-semibold">${acc.followers.toLocaleString('id-ID')}</td>
+            <td class="py-3 px-3">${acc.engagement.toLocaleString('id-ID')}</td>
+            <td class="py-3 px-3">${(acc.reach/1000).toFixed(0)}k</td>
+            <td class="py-3 px-3 text-right">
+              <button type="button" onclick="event.stopPropagation(); openThemeModal('${acc.id}')" class="px-2.5 py-1 rounded-full text-[11px] font-bold border border-slate-200 bg-white">Ubah</button>
+            </td>
+          </tr>`;
+      });
     }
 
-    function filterAccountsTable() {
-      renderAccountsTable();
-    }
-
-    function changeActiveAccount(accId) {
-      currentActiveAccountId = accId;
-      document.getElementById('account-selector').value = accId;
-      const badge = document.getElementById('dashboard-brand-badge');
-
-      if (accId === 'all') {
-        const totals = accounts.reduce((sum, a) => ({
-          followers: sum.followers + a.followers,
-          engagement: sum.engagement + a.engagement,
-          reach: sum.reach + a.reach,
-          impressions: sum.impressions + a.impressions
-        }), { followers: 0, engagement: 0, reach: 0, impressions: 0 });
-
-        document.getElementById('kpi-followers').innerText = totals.followers.toLocaleString('id-ID');
-        document.getElementById('kpi-engagement').innerText = totals.engagement.toLocaleString('id-ID');
-        document.getElementById('kpi-reach').innerText = formatNumber(totals.reach);
-        document.getElementById('kpi-impressions').innerText = formatNumber(totals.impressions);
-
-        badge.classList.add('hidden');
-        applyBrandTheme(DEFAULT_ALL_COLOR, 'Semua Akun (Default)');
+    function changeActiveAccount(id) {
+      currentActiveAccountId = id;
+      document.getElementById('account-selector').value = id;
+      if (id === 'all') {
+        applyBrandTheme('#4F46E5', 'Semua Akun (Default)');
       } else {
-        const acc = accounts.find(a => a.id === accId);
+        const acc = accounts.find(a => a.id === id);
         if (acc) {
           document.getElementById('kpi-followers').innerText = acc.followers.toLocaleString('id-ID');
           document.getElementById('kpi-engagement').innerText = acc.engagement.toLocaleString('id-ID');
-          document.getElementById('kpi-reach').innerText = formatNumber(acc.reach);
-          document.getElementById('kpi-impressions').innerText = formatNumber(acc.impressions);
+          document.getElementById('kpi-reach').innerText = (acc.reach/1000).toFixed(0) + 'k';
+          document.getElementById('kpi-impressions').innerText = (acc.impressions/1000000).toFixed(1) + 'M';
+          applyBrandTheme(acc.color, acc.username);
+          document.getElementById('post-account').value = acc.username;
+          updatePreview();
+        }
+      }
+    }
 
-          badge.innerText = acc.username;
-          badge.classList.remove('hidden');
-          applyBrandTheme(acc.color || DEFAULT_ALL_COLOR, acc.username);
+    // ==========================================
+    // UPLOAD FILE LOKAL DARI PC + LIVE PREVIEW
+    // ==========================================
+    async function handleLocalFileSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
 
-          // Sinkronkan juga pilihan akun di form Create Post
-          const postSelect = document.getElementById('post-account');
-          if (postSelect) {
-            postSelect.value = acc.username;
-            updatePreview();
+      document.getElementById('local-file-label').innerText = file.name;
+      localPreviewIsVideo = file.type.startsWith('video/');
+      if (localPreviewObjectUrl) URL.revokeObjectURL(localPreviewObjectUrl);
+      localPreviewObjectUrl = URL.createObjectURL(file);
+      updatePreview();
+
+      // Jika Cloudinary diisi di Settings, upload otomatis di background
+      const cloudName = localStorage.getItem('cfg_cloudinary_name');
+      const uploadPreset = localStorage.getItem('cfg_cloudinary_preset');
+      if (cloudName && uploadPreset) {
+        showToast('Mengunggah file ke Cloudinary di background...');
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', uploadPreset);
+        try {
+          const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, { method: 'POST', body: formData });
+          const data = await res.json();
+          if (data.secure_url) {
+            document.getElementById('post-media-url').value = data.secure_url;
+            showToast('File siap untuk Auto-Post Instagram!');
           }
+        } catch (err) {
+          showToast('Preview lokal aktif (Upload cloud dilewati).');
         }
+      } else {
+        showToast('Preview file lokal berhasil dimuat!');
       }
-    }
-
-    function initCharts() {
-      if (typeof Chart === 'undefined') return;
-
-      const ctxGrowth = document.getElementById('growthChart').getContext('2d');
-      growthChartInstance = new Chart(ctxGrowth, {
-        type: 'bar',
-        data: {
-          labels: ['Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov'],
-          datasets: [{
-            label: 'New Followers',
-            data: [4200, 5100, 6800, 5900, 7400, 8900],
-            backgroundColor: ['#E2E8F0', '#E2E8F0', '#4F46E5', '#E2E8F0', '#93C5FD', '#4F46E5'],
-            borderRadius: 999,
-            borderSkipped: false,
-            barThickness: 22
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { grid: { display: false }, border: { display: false } },
-            y: { grid: { color: '#F1F5F9' }, border: { display: false }, ticks: { font: { size: 10 } } }
-          }
-        }
-      });
-
-      const ctxDemo = document.getElementById('demoChart').getContext('2d');
-      demoChartInstance = new Chart(ctxDemo, {
-        type: 'bar',
-        data: {
-          labels: ['18-24', '25-34', '35-44', '45+'],
-          datasets: [{
-            data: [24, 52, 17, 7],
-            backgroundColor: ['#1E293B', '#4F46E5', '#F97316', '#EC4899'],
-            borderRadius: 12,
-            barThickness: 26
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { grid: { display: false }, border: { display: false } },
-            y: { display: false, max: 60 }
-          }
-        }
-      });
-
-      const ctxSent = document.getElementById('sentimentChart').getContext('2d');
-      sentimentChartInstance = new Chart(ctxSent, {
-        type: 'doughnut',
-        data: {
-          labels: ['Positive', 'Neutral', 'Negative'],
-          datasets: [{
-            data: [68, 21, 11],
-            backgroundColor: ['#4F46E5', '#38BDF8', '#E2E8F0'],
-            borderWidth: 0,
-            circumference: 180,
-            rotation: 270,
-            cutout: '78%'
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } }
-        }
-      });
-    }
-
-    function renderHeatmap(baseColor = '#4F46E5') {
-      const grid = document.getElementById('heatmap-grid');
-      const opacities = [0.08, 0.22, 0.45, 0.72, 1];
-      let html = '';
-      for (let i = 0; i < 32; i++) {
-        const level = (i * 7 + 3) % 5;
-        const bg = hexToRgba(baseColor, opacities[level]);
-        html += `<div class="h-6 rounded-md transition hover:scale-105" style="background-color: ${bg}" title="Engagement Level ${level + 1}/5"></div>`;
-      }
-      grid.innerHTML = html;
-    }
-
-    // ==========================================
-    // 5. MODAL CUSTOMIZE WARNA PER AKUN
-    // ==========================================
-    function openThemeModal(preselectAccId) {
-      const select = document.getElementById('theme-account-select');
-      if (preselectAccId) {
-        select.value = preselectAccId;
-      } else if (currentActiveAccountId !== 'all') {
-        select.value = currentActiveAccountId;
-      }
-      loadSelectedAccountColor();
-      document.getElementById('modal-theme-color').classList.remove('hidden');
-    }
-
-    function closeThemeModal() {
-      document.getElementById('modal-theme-color').classList.add('hidden');
-    }
-
-    function loadSelectedAccountColor() {
-      const accId = document.getElementById('theme-account-select').value;
-      const acc = accounts.find(a => a.id === accId);
-      const color = (acc && acc.color) ? acc.color : '#4F46E5';
-      document.getElementById('theme-color-picker').value = color;
-      document.getElementById('theme-color-hex').value = color;
-    }
-
-    function setPresetColor(hex) {
-      document.getElementById('theme-color-picker').value = hex;
-      document.getElementById('theme-color-hex').value = hex;
-    }
-
-    function saveAccountThemeColor() {
-      const accId = document.getElementById('theme-account-select').value;
-      const chosenColor = document.getElementById('theme-color-hex').value.trim();
-      const acc = accounts.find(a => a.id === accId);
-
-      if (acc) {
-        acc.color = chosenColor;
-        localStorage.setItem('mabes_accounts', JSON.stringify(accounts));
-        renderAccountsTable();
-        changeActiveAccount(acc.id);
-        closeThemeModal();
-        showToast(`Warna tema ${acc.username} diperbarui!`);
-      }
-    }
-
-    // ==========================================
-    // 6. GEMINI AI CAPTION & SCHEDULER
-    // ==========================================
-    function setPostType(type) {
-      currentPostType = type;
-      document.getElementById('preview-type-label').innerText = type;
-      ['Feed', 'Reels', 'Story'].forEach(t => {
-        const btn = document.getElementById('type-' + t);
-        if (t === type) {
-          btn.className = 'post-type-btn py-2 px-3 rounded-xl text-xs font-bold brand-bg';
-        } else {
-          btn.className = 'post-type-btn py-2 px-3 rounded-xl text-xs font-bold bg-slate-100 text-slate-600';
-        }
-      });
     }
 
     function updatePreview() {
       const username = document.getElementById('post-account').value || '@brand_account';
       const caption = document.getElementById('post-caption').value;
-      const mediaUrl = document.getElementById('post-media-url').value;
-
-      // Sesuaikan warna preview IG sesuai akun yang dipilih
       const accObj = accounts.find(a => a.username === username);
       const brandColor = accObj ? accObj.color : '#4F46E5';
+
       document.getElementById('preview-avatar-ring').style.backgroundColor = brandColor;
       document.getElementById('preview-ig-header').style.backgroundColor = hexToRgba(brandColor, 0.06);
-
       document.getElementById('preview-username').innerText = username;
       document.getElementById('preview-username-caption').innerText = username.replace('@', '');
       document.getElementById('preview-caption-text').innerText = caption || 'Caption postingan kamu akan tampil di sini...';
 
       const mediaBox = document.getElementById('preview-media-box');
-      if (mediaUrl && (mediaUrl.startsWith('http://') || mediaUrl.startsWith('https://'))) {
-        mediaBox.innerHTML = `<img src="${mediaUrl}" alt="Preview" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<span class=text-xs>URL Gambar tidak valid</span>'">`;
-      } else {
-        mediaBox.innerHTML = `<i data-lucide="image" class="w-8 h-8 mb-1 opacity-50"></i><span class="text-[11px]">Preview Media</span>`;
-        if (typeof lucide !== 'undefined') lucide.createIcons();
+      if (localPreviewObjectUrl) {
+        if (localPreviewIsVideo) {
+          mediaBox.innerHTML = `<video src="${localPreviewObjectUrl}" class="w-full h-full object-cover" autoplay muted loop playsinline></video>`;
+        } else {
+          mediaBox.innerHTML = `<img src="${localPreviewObjectUrl}" class="w-full h-full object-cover">`;
+        }
       }
     }
 
+    // ==========================================
+    // GEMINI AI CAPTION GENERATOR (FIXED)
+    // ==========================================
     async function generateGeminiCaption() {
       const promptText = document.getElementById('ai-prompt').value.trim();
       const tone = document.getElementById('ai-tone').value;
-      const apiKey = localStorage.getItem('cfg_gemini_key');
+      const apiKey = (localStorage.getItem('cfg_gemini_key') || '').trim();
       const box = document.getElementById('ai-suggestions');
       const btn = document.getElementById('btn-generate-ai');
 
@@ -1274,42 +665,51 @@
         return;
       }
 
-      btn.innerText = 'Berpikir...';
+      btn.innerText = 'Memproses...';
       btn.disabled = true;
       box.classList.remove('hidden');
-      box.innerHTML = '<p class="text-xs brand-text font-semibold animate-pulse">Sedang merangkai 3 opsi caption...</p>';
+      box.innerHTML = '<p class="text-xs brand-text font-semibold animate-pulse">Menghubungi Gemini AI...</p>';
 
       if (apiKey) {
         try {
-          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               contents: [{
                 parts: [{
-                  text: `Buatkan 3 opsi caption Instagram bahasa Indonesia yang menarik dengan gaya "${tone}" berdasarkan brief berikut: "${promptText}". Pisahkan setiap opsi dengan tanda "---" tanpa nomor pembuka.`
+                  text: `Buatkan 3 opsi caption Instagram bahasa Indonesia yang menarik dengan gaya "${tone}" untuk brief berikut: "${promptText}". Sertakan emoji dan hashtag relevan. Pisahkan setiap opsi dengan tanda === tanpa penomoran.`
                 }]
               }]
             })
           });
+
           const data = await response.json();
-          const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-          const options = rawText.split('---').map(s => s.trim()).filter(Boolean);
-          renderCaptionOptions(options.length ? options : [rawText]);
+
+          if (!response.ok || data.error) {
+            const errMsg = data.error?.message || `HTTP Error ${response.status}`;
+            box.innerHTML = `<div class="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700"><strong>Gagal memanggil Gemini API:</strong> ${errMsg}<br><span class="text-[11px]">Pastikan API Key dari aistudio.google.com sudah benar tanpa spasi.</span></div>`;
+          } else {
+            const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+            if (!rawText) {
+              box.innerHTML = `<div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800">Gemini tidak mengembalikan teks. Coba ubah kata kunci prompt.</div>`;
+            } else {
+              const options = rawText.split('===').map(s => s.trim()).filter(Boolean);
+              renderCaptionOptions(options.length ? options : [rawText]);
+            }
+          }
         } catch (err) {
-          showToast('Gagal terhubung ke Gemini API. Cek API Key di Settings.');
-          box.classList.add('hidden');
+          box.innerHTML = `<div class="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700">Koneksi jaringan gagal: ${err.message}</div>`;
         }
       } else {
         setTimeout(() => {
-          const simulated = [
-            `✨ ${promptText}! Saatnya bikin harimu makin seru bareng kami. Yuk tag teman kamu di kolom komentar sekarang! 👇 #Purwokerto #InfoPromo`,
-            `Lagi cari yang spesial minggu ini? ${promptText} hadir khusus buat kamu! Jangan sampai kehabisan slotnya ya 🔥 Klik link di bio!`,
-            `Weekend vibes dimulai dari sini 🙌 ${promptText}. Simpan postingan ini biar nggak lupa mampir nanti!`
-          ];
-          renderCaptionOptions(simulated);
-          showToast('Mode Simulasi: Isi Gemini API Key di Settings untuk hasil AI penuh.');
-        }, 600);
+          renderCaptionOptions([
+            `✨ ${promptText}! Jangan sampai kelewatan kesempatan spesial ini. Tag teman kamu di komentar sekarang! 👇 #Purwokerto #PromoSpesial`,
+            `Lagi cari penawaran terbaik minggu ini? ${promptText} hadir khusus buat kamu! Stok terbatas, langsung cek link di bio ya 🔥`,
+            `Bikin harimu makin seru bareng kami 🙌 ${promptText}. Simpan postingan ini biar nggak lupa!`
+          ]);
+          showToast('Mode Simulasi: Isi Gemini API Key di Settings.');
+        }, 500);
       }
 
       btn.innerText = 'Generate';
@@ -1320,203 +720,197 @@
       const box = document.getElementById('ai-suggestions');
       box.innerHTML = '';
       options.slice(0, 3).forEach((opt) => {
-        const safeText = opt.replace(/"/g, '"');
-        box.innerHTML += `
-          <div class="p-3 bg-white rounded-xl border border-slate-200 text-xs text-slate-700 flex items-start justify-between gap-3">
-            <p class="leading-relaxed">${opt}</p>
-            <button type="button" onclick="useCaption(this.getAttribute('data-caption'))" data-caption="${safeText}" class="shrink-0 px-2.5 py-1 brand-bg-soft font-bold rounded-lg transition hover:opacity-80">
-              Pakai
-            </button>
-          </div>
-        `;
+        const div = document.createElement('div');
+        div.className = 'p-3 bg-white rounded-xl border border-slate-200 text-xs text-slate-700 flex items-start justify-between gap-3';
+        
+        const p = document.createElement('p');
+        p.className = 'leading-relaxed whitespace-pre-line';
+        p.innerText = opt;
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'shrink-0 px-2.5 py-1 brand-bg-soft font-bold rounded-lg hover:opacity-80';
+        btn.innerText = 'Pakai';
+        btn.onclick = () => {
+          document.getElementById('post-caption').value = opt;
+          updatePreview();
+          showToast('Caption diterapkan ke editor!');
+        };
+
+        div.appendChild(p);
+        div.appendChild(btn);
+        box.appendChild(div);
       });
     }
 
-    function useCaption(text) {
-      document.getElementById('post-caption').value = text;
-      updatePreview();
-      showToast('Caption diterapkan ke editor!');
+    function setPostType(type) {
+      currentPostType = type;
+      document.getElementById('preview-type-label').innerText = type;
+      ['Feed', 'Reels', 'Story'].forEach(t => {
+        document.getElementById('type-' + t).className = (t === type)
+          ? 'post-type-btn py-2 px-3 rounded-xl text-xs font-bold brand-bg'
+          : 'post-type-btn py-2 px-3 rounded-xl text-xs font-bold bg-slate-100 text-slate-600';
+      });
     }
 
     function saveScheduledPost(status) {
       const account = document.getElementById('post-account').value;
       const caption = document.getElementById('post-caption').value.trim();
       const datetime = document.getElementById('post-schedule-time').value || new Date().toISOString().slice(0, 16);
-
-      if (!caption) {
-        showToast('Caption tidak boleh kosong!');
-        return;
-      }
-
-      scheduledPosts.unshift({
-        id: Date.now(),
-        datetime,
-        account,
-        type: currentPostType,
-        caption,
-        status
-      });
+      if (!caption) { showToast('Caption tidak boleh kosong!'); return; }
+      scheduledPosts.unshift({ id: Date.now(), datetime, account, type: currentPostType, caption, status });
       localStorage.setItem('mabes_posts', JSON.stringify(scheduledPosts));
       renderScheduleTable();
-      showToast(`Konten berhasil disimpan sebagai ${status}!`);
+      showToast(`Konten disimpan sebagai ${status}!`);
       switchTab('calendar');
     }
 
     function renderScheduleTable() {
       const tbody = document.getElementById('schedule-table-body');
       document.getElementById('badge-scheduled-count').innerText = scheduledPosts.length;
-      tbody.innerHTML = '';
-
-      scheduledPosts.forEach(item => {
-        const badgeColor = item.status === 'Scheduled' ? 'brand-bg-soft' : 'bg-slate-100 text-slate-600';
-        tbody.innerHTML += `
-          <tr>
-            <td class="py-3 px-4 font-semibold text-slate-700 whitespace-nowrap">${item.datetime.replace('T', ' ')}</td>
-            <td class="py-3 px-4 font-bold text-slate-800">${item.account}</td>
-            <td class="py-3 px-4"><span class="px-2 py-0.5 rounded bg-slate-100 text-xs font-bold text-slate-600">${item.type}</span></td>
-            <td class="py-3 px-4 text-slate-600 max-w-xs truncate">${item.caption}</td>
-            <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${badgeColor}">${item.status}</span></td>
-            <td class="py-3 px-4 text-right">
-              <button type="button" onclick="deleteScheduledPost(${item.id})" class="text-xs font-semibold text-rose-500 hover:underline">Hapus</button>
-            </td>
-          </tr>
-        `;
-      });
+      tbody.innerHTML = scheduledPosts.map(item => `
+        <tr>
+          <td class="py-3 px-4 font-semibold">${item.datetime.replace('T', ' ')}</td>
+          <td class="py-3 px-4 font-bold">${item.account}</td>
+          <td class="py-3 px-4"><span class="px-2 py-0.5 rounded bg-slate-100 text-xs font-bold">${item.type}</span></td>
+          <td class="py-3 px-4 max-w-xs truncate">${item.caption}</td>
+          <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-bold brand-bg-soft">${item.status}</span></td>
+          <td class="py-3 px-4 text-right"><button type="button" onclick="deleteScheduledPost(${item.id})" class="text-xs font-semibold text-rose-500">Hapus</button></td>
+        </tr>`).join('');
     }
 
     function deleteScheduledPost(id) {
       scheduledPosts = scheduledPosts.filter(p => p.id !== id);
       localStorage.setItem('mabes_posts', JSON.stringify(scheduledPosts));
       renderScheduleTable();
-      showToast('Jadwal dihapus.');
     }
 
-    // ==========================================
-    // 7. SETTINGS, TAMBAH AKUN IG & EXPORT CSV
-    // ==========================================
+    function renderTeamUsersTable() {
+      document.getElementById('team-users-table-body').innerHTML = teamUsers.map(u => `
+        <tr>
+          <td class="py-3 px-3 font-bold">${u.name}</td>
+          <td class="py-3 px-3">${u.role || 'Team'}</td>
+          <td class="py-3 px-3 font-mono">${u.username}</td>
+          <td class="py-3 px-3 font-mono">${u.password}</td>
+          <td class="py-3 px-3 text-right">${u.isDefault ? 'Default' : `<button type="button" onclick="deleteTeamUser('${u.id}')" class="text-rose-500 font-bold">Hapus</button>`}</td>
+        </tr>`).join('');
+    }
+
+    function addTeamUser(e) {
+      e.preventDefault();
+      teamUsers.push({
+        id: 'u_' + Date.now(),
+        name: document.getElementById('new-user-name').value.trim(),
+        role: document.getElementById('new-user-role').value.trim(),
+        username: document.getElementById('new-user-username').value.trim(),
+        password: document.getElementById('new-user-password').value.trim()
+      });
+      localStorage.setItem('mabes_team_users', JSON.stringify(teamUsers));
+      renderTeamUsersTable();
+      e.target.reset();
+      showToast('User tim berhasil ditambahkan!');
+    }
+
+    function deleteTeamUser(id) {
+      teamUsers = teamUsers.filter(u => u.id !== id);
+      localStorage.setItem('mabes_team_users', JSON.stringify(teamUsers));
+      renderTeamUsersTable();
+    }
+
+    function openAddAccountModal() { document.getElementById('modal-add-account').classList.remove('hidden'); }
+    function addNewAccount() {
+      let u = document.getElementById('new-acc-username').value.trim();
+      if (!u) return;
+      if (!u.startsWith('@')) u = '@' + u;
+      accounts.push({ id: 'acc_' + Date.now(), username: u, color: document.getElementById('new-acc-color-hex').value, followers: 10000, engagement: 2200, reach: 50000, impressions: 90000 });
+      localStorage.setItem('mabes_accounts', JSON.stringify(accounts));
+      populateAccountSelectors(); renderAccountsTable();
+      document.getElementById('modal-add-account').classList.add('hidden');
+    }
+
+    function openThemeModal(id) {
+      if (id) document.getElementById('theme-account-select').value = id;
+      loadSelectedAccountColor();
+      document.getElementById('modal-theme-color').classList.remove('hidden');
+    }
+    function loadSelectedAccountColor() {
+      const acc = accounts.find(a => a.id === document.getElementById('theme-account-select').value);
+      if (acc) {
+        document.getElementById('theme-color-picker').value = acc.color;
+        document.getElementById('theme-color-hex').value = acc.color;
+      }
+    }
+    function setPresetColor(hex) {
+      document.getElementById('theme-color-picker').value = hex;
+      document.getElementById('theme-color-hex').value = hex;
+    }
+    function saveAccountThemeColor() {
+      const acc = accounts.find(a => a.id === document.getElementById('theme-account-select').value);
+      if (acc) {
+        acc.color = document.getElementById('theme-color-hex').value;
+        localStorage.setItem('mabes_accounts', JSON.stringify(accounts));
+        renderAccountsTable(); changeActiveAccount(acc.id);
+        document.getElementById('modal-theme-color').classList.add('hidden');
+      }
+    }
+
     function loadSettings() {
       document.getElementById('cfg-gemini-key').value = localStorage.getItem('cfg_gemini_key') || '';
       document.getElementById('cfg-ig-token').value = localStorage.getItem('cfg_ig_token') || '';
-      document.getElementById('cfg-webhook-url').value = localStorage.getItem('cfg_webhook_url') || '';
       document.getElementById('cfg-cloudinary-name').value = localStorage.getItem('cfg_cloudinary_name') || '';
-
-      if (localStorage.getItem('cfg_gemini_key') || localStorage.getItem('cfg_ig_token')) {
-        document.getElementById('api-status-dot').className = 'ml-auto w-2 h-2 rounded-full bg-emerald-500';
-      }
+      document.getElementById('cfg-cloudinary-preset').value = localStorage.getItem('cfg_cloudinary_preset') || '';
+      if (localStorage.getItem('cfg_gemini_key')) document.getElementById('api-status-dot').className = 'ml-auto w-2 h-2 rounded-full bg-emerald-500';
     }
 
     function saveSettings() {
       localStorage.setItem('cfg_gemini_key', document.getElementById('cfg-gemini-key').value.trim());
       localStorage.setItem('cfg_ig_token', document.getElementById('cfg-ig-token').value.trim());
-      localStorage.setItem('cfg_webhook_url', document.getElementById('cfg-webhook-url').value.trim());
       localStorage.setItem('cfg_cloudinary_name', document.getElementById('cfg-cloudinary-name').value.trim());
+      localStorage.setItem('cfg_cloudinary_preset', document.getElementById('cfg-cloudinary-preset').value.trim());
       loadSettings();
-      showToast('Konfigurasi API berhasil disimpan!');
+      showToast('Konfigurasi API disimpan!');
     }
 
-    function openAddAccountModal() {
-      document.getElementById('modal-add-account').classList.remove('hidden');
-    }
-
-    function closeAddAccountModal() {
-      document.getElementById('modal-add-account').classList.add('hidden');
-    }
-
-    function addNewAccount() {
-      let username = document.getElementById('new-acc-username').value.trim();
-      const color = document.getElementById('new-acc-color-hex').value.trim() || '#1E3A8A';
-      const igUserId = document.getElementById('new-acc-id').value.trim() || '17841499';
-      const followers = parseInt(document.getElementById('new-acc-followers').value) || 10000;
-      const reach = parseInt(document.getElementById('new-acc-reach').value) || 50000;
-
-      if (!username) {
-        showToast('Masukkan username Instagram!');
-        return;
-      }
-      if (!username.startsWith('@')) username = '@' + username;
-
-      const newId = 'acc_' + Date.now();
-      accounts.push({
-        id: newId,
-        username,
-        color,
-        igUserId,
-        followers,
-        engagement: Math.round(followers * 0.22),
-        reach,
-        impressions: Math.round(reach * 1.9),
-        growth: '+9.4%'
+    function initCharts() {
+      if (typeof Chart === 'undefined') return;
+      growthChartInstance = new Chart(document.getElementById('growthChart'), {
+        type: 'bar',
+        data: { labels: ['Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov'], datasets: [{ data: [4200, 5100, 6800, 5900, 7400, 8900], backgroundColor: ['#E2E8F0', '#E2E8F0', '#4F46E5', '#E2E8F0', '#93C5FD', '#4F46E5'], borderRadius: 999, barThickness: 22 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#F1F5F9' } } } }
       });
-
-      localStorage.setItem('mabes_accounts', JSON.stringify(accounts));
-      populateAccountSelectors();
-      renderAccountsTable();
-      changeActiveAccount(newId);
-      closeAddAccountModal();
-      showToast(`Akun ${username} berhasil ditambahkan!`);
-    }
-
-    async function syncInstagramData() {
-      const token = localStorage.getItem('cfg_ig_token');
-      if (!token) {
-        showToast('Mode Simulasi: Isi IG Access Token di API & Settings untuk sync data asli.');
-        return;
-      }
-      showToast('Menarik data terbaru dari Instagram Graph API...');
-      for (let acc of accounts) {
-        if (!acc.igUserId) continue;
-        try {
-          const res = await fetch(`https://graph.facebook.com/v21.0/${acc.igUserId}?fields=username,followers_count,media_count&access_token=${token}`);
-          const data = await res.json();
-          if (data.followers_count) {
-            acc.followers = data.followers_count;
-            if (data.username) acc.username = '@' + data.username;
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      }
-      localStorage.setItem('mabes_accounts', JSON.stringify(accounts));
-      renderAccountsTable();
-      changeActiveAccount(currentActiveAccountId);
-      showToast('Sinkronisasi Instagram selesai!');
+      new Chart(document.getElementById('demoChart'), {
+        type: 'bar',
+        data: { labels: ['18-24', '25-34', '35-44', '45+'], datasets: [{ data: [24, 52, 17, 7], backgroundColor: ['#1E293B', '#4F46E5', '#F97316', '#EC4899'], borderRadius: 12, barThickness: 26 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { display: false, max: 60 } } }
+      });
+      sentimentChartInstance = new Chart(document.getElementById('sentimentChart'), {
+        type: 'doughnut',
+        data: { datasets: [{ data: [68, 21, 11], backgroundColor: ['#4F46E5', '#38BDF8', '#E2E8F0'], borderWidth: 0, circumference: 180, rotation: 270, cutout: '78%' }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      });
     }
 
     function exportCSV() {
-      let csv = 'Username,ThemeColor,Followers,Engagement,Reach,Impressions,Growth\n';
-      accounts.forEach(a => {
-        csv += `${a.username},${a.color || '#4F46E5'},${a.followers},${a.engagement},${a.reach},${a.impressions},${a.growth}\n`;
-      });
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      let csv = 'Username,Followers,Engagement,Reach\n' + accounts.map(a => `${a.username},${a.followers},${a.engagement},${a.reach}`).join('\n');
       const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'mabes_social_media_report.csv';
-      link.click();
-      showToast('Laporan CSV berhasil diunduh!');
+      link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+      link.download = 'mabes_report.csv'; link.click();
     }
+
+    function syncInstagramData() { showToast('Gunakan IG Graph API Token di Settings untuk sinkronisasi live.'); }
 
     function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.innerText = msg;
-      toast.classList.remove('translate-y-20', 'opacity-0');
-      setTimeout(() => {
-        toast.classList.add('translate-y-20', 'opacity-0');
-      }, 3200);
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3200);
     }
 
-    // ==========================================
-    // 8. INISIALISASI SAAT HALAMAN DIBUKA
-    // ==========================================
     document.addEventListener('DOMContentLoaded', () => {
       if (typeof lucide !== 'undefined') lucide.createIcons();
-      checkAuthSession();
-      renderTeamUsersTable();
-      populateAccountSelectors();
-      renderAccountsTable();
-      initCharts();
-      changeActiveAccount('all');
-      renderScheduleTable();
-      loadSettings();
+      checkAuthSession(); renderTeamUsersTable(); populateAccountSelectors();
+      renderAccountsTable(); initCharts(); changeActiveAccount('all');
+      renderScheduleTable(); loadSettings();
     });
   </script>
 </body>
