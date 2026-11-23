@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IG Pulse — Multi-Account Instagram Analytics Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#EEF2FF',
+                            100: '#E0E7FF',
+                            200: '#C7D2FE',
+                            400: '#60A5FA',
+                            500: '#4F6EF7',
+                            600: '#3B5BDB',
+                            700: '#2B4ACB',
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -1px rgba(15, 23, 42, 0.02)',
+                        'card': '0 1px 3px 0 rgba(15, 23, 42, 0.03), 0 1px 2px -1px rgba(15, 23, 42, 0.02)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F5F7FB;
+            color: #0F172A;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+        .pill-transition {
+            transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease;
+        }
+        .gauge-arc {
+            transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand-100 selection:text-brand-600">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-30 hidden lg:hidden transition-opacity"></div>
+
+    <div class="min-h-screen flex">
+        <!-- LEFT SIDEBAR -->
+        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-200/80 flex flex-col justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+            <div>
+                <!-- Brand Header -->
+                <div class="h-20 px-6 flex items-center justify-between border-b border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+                            <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
+                        </div>
+                        <span class="font-extrabold text-xl tracking-tight text-slate-900">IG<span class="text-brand-500">Pulse</span></span>
+                    </div>
+                    <button onclick="toggleSidebar()" class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <!-- Navigation Menus -->
+                <div class="px-4 py-6 space-y-6">
+                    <!-- MAIN MENU -->
+                    <div>
+                        <p class="px-3 mb-2.5 text-[11px] font-bold tracking-wider text-slate-400 uppercase">Main Menu</p>
+                        <nav class="space-y-1">
+                            <button id="nav-dashboard" onclick="switchView('dashboard')" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold bg-brand-50 text-brand-600 transition-colors cursor-pointer">
+                                <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                                <span>Dashboard</span>
+                            </button>
+                            <button id="nav-composer" onclick="switchView('composer')" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer">
+                                <i data-lucide="sparkles" class="w-4 h-4 text-slate-400"></i>
+                                <span>AI Playground & Post</span>
+                                <span class="ml-auto text-[10px] font-bold bg-brand-100 text-brand-600 px-1.5 py-0.5 rounded-md">AI</span>
+                            </button>
+                            <button id="nav-calendar" onclick="switchView('calendar')" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer">
+                                <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
+                                <span>Content Calendar</span>
+                                <span id="sidebar-sched-count" class="ml-auto text-xs font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">3</span>
+                            </button>
+                            <button onclick="openAddAccountModal()" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer">
+                                <i data-lucide="users" class="w-4 h-4 text-slate-400"></i>
+                                <span>Managed Accounts</span>
+                                <span id="sidebar-acc-count" class="ml-auto text-xs font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">4</span>
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- GENERAL -->
+                    <div>
+                        <p class="px-3 mb-2.5 text-[11px] font-bold tracking-wider text-slate-400 uppercase">General</p>
+                        <nav class="space-y-1">
+                            <button id="nav-settings" onclick="switchView('settings')" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer">
+                                <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i>
+                                <span>API & Settings</span>
+                            </button>
+                            <button onclick="exportToCSV()" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer">
+                                <i data-lucide="file-spreadsheet" class="w-4 h-4 text-slate-400"></i>
+                                <span>Export Monthly Report</span>
+                            </button>
+                            <button onclick="openHelpModal()" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer">
+                                <i data-lucide="help-circle" class="w-4 h-4 text-slate-400"></i>
+                                <span>Panduan GitHub Pages</span>
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Status / Connect Card -->
+            <div class="p-4">
+                <div class="bg-slate-50 border border-slate-200/70 rounded-2xl p-4">
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <span id="api-status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+                        <h4 id="api-status-title" class="text-sm font-bold text-slate-900">Ready for GitHub</h4>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed mb-3.5">
+                        Atur Meta Graph API, Gemini AI Key, & Cloudinary untuk auto-post gratis.
+                    </p>
+                    <button onclick="switchView('settings')" class="w-full py-2.5 px-4 bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold rounded-xl shadow-sm shadow-brand-500/25 transition-all cursor-pointer">
+                        Configure APIs
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN WORKSPACE -->
+        <div class="flex-1 flex flex-col min-w-0">
+            <!-- TOP BAR -->
+            <header class="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200/70 px-4 sm:px-8 flex items-center justify-between gap-4 sticky top-0 z-20">
+                <div class="flex items-center gap-3 flex-1 max-w-md">
+                    <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
+                    </button>
+                    <!-- Search Bar -->
+                    <div class="relative w-full">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                        <input id="search-input" type="text" oninput="filterAccountTable()" placeholder="Search account or brand..." class="w-full pl-10 pr-4 py-2 bg-slate-100/80 hover:bg-slate-100 focus:bg-white border border-transparent focus:border-brand-300 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none transition-all">
+                    </div>
+                </div>
+
+                <!-- Right Controls: Account Switcher & User Profile -->
+                <div class="flex items-center gap-2.5 sm:gap-3">
+                    <!-- Account Filter Selector -->
+                    <div class="relative">
+                        <select id="account-selector" onchange="handleAccountChange(this.value)" class="appearance-none bg-white border border-slate-200 hover:border-slate-300 text-slate-700 text-xs sm:text-sm font-semibold rounded-xl pl-3.5 pr-9 py-2 focus:outline-none focus:border-brand-500 cursor-pointer shadow-2xs">
+                            <option value="all">All Accounts (4)</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                    </div>
+
+                    <!-- Notification Icon -->
+                    <button onclick="switchView('composer')" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold shadow-xs transition-all cursor-pointer">
+                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                        <span>New Post</span>
+                    </button>
+
+                    <!-- Profile Pill -->
+                    <div class="flex items-center gap-2.5 pl-2 sm:border-l sm:border-slate-200">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                            SM
+                        </div>
+                        <div class="hidden md:block text-left">
+                            <p class="text-xs font-bold text-slate-900 leading-tight">Social Specialist</p>
+                            <p class="text-[11px] text-slate-400 font-medium">Multi-Brand Manager</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- DASHBOARD CONTENT -->
+            <main class="flex-1 p-4 sm:p-8 max-w-[1440px] w-full mx-auto">
+
+                <!-- =========================================================
+                     VIEW 1: DASHBOARD ANALYTICS
+                     ========================================================= -->
+                <div id="view-dashboard" class="space-y-6">
+                
+                <!-- Title & Action Row -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-2.5">
+                            <h1 class="text-2xl sm:text-[26px] font-extrabold text-slate-900 tracking-tight">Social Media Analytics</h1>
+                            <span id="active-account-badge" class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-brand-50 text-brand-600 border border-brand-100">
+                                All Accounts
+                            </span>
+                        </div>
+                        <p class="text-sm text-slate-500 mt-0.5">Monitor reach, engagement, and audience health — all your Instagram accounts, one view.</p>
+                    </div>
+
+                    <div class="flex items-center gap-2.5">
+                        <button onclick="exportToCSV()" class="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold shadow-2xs transition-all cursor-pointer">
+                            <i data-lucide="download" class="w-4 h-4 text-slate-500"></i>
+                            <span>Export CSV</span>
+                        </button>
+                        <button onclick="simulateRefresh()" class="inline-flex items-center justify-center w-10 h-10 bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 rounded-xl shadow-2xs transition-all cursor-pointer" title="Refresh Data">
+                            <i id="refresh-icon" data-lucide="refresh-cw" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ROW 1: 4 KPI CARDS -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+                    <!-- KPI 1: Total Followers -->
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200/70 shadow-soft hover:border-brand-200 transition-all">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-sm font-medium text-slate-500">Total Followers</span>
+                            <div class="w-9 h-9 rounded-xl bg-brand-500 text-white flex items-center justify-center shadow-xs shadow-brand-500/30">
+                                <i data-lucide="users" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-end justify-between">
+                            <div>
+                                <h2 id="kpi-followers" class="text-3xl font-extrabold text-slate-900 tracking-tight">241,870</h2>
+                                <div class="flex items-center gap-1.5 mt-2">
+                                    <span id="kpi-followers-growth" class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-600">
+                                        ↗ +11%
+                                    </span>
+                                    <span class="text-xs text-slate-400">vs. last month</span>
+                                </div>
+                            </div>
+                            <!-- Mini Sparkline Bars -->
+                            <div class="flex items-end gap-1 h-9">
+                                <span class="w-1.5 h-3 bg-brand-100 rounded-full"></span>
+                                <span class="w-1.5 h-5 bg-brand-200 rounded-full"></span>
+                                <span class="w-1.5 h-4 bg-brand-200 rounded-full"></span>
+                                <span class="w-1.5 h-7 bg-brand-500 rounded-full"></span>
+                                <span class="w-1.5 h-9 bg-brand-500 rounded-full"></span>
+                                <span class="w-1.5 h-6 bg-brand-200 rounded-full"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KPI 2: Total Engagement -->
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200/70 shadow-soft hover:border-brand-200 transition-all">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-sm font-medium text-slate-500">Total Engagement</span>
+                            <div class="w-9 h-9 rounded-xl bg-brand-500 text-white flex items-center justify-center shadow-xs shadow-brand-500/30">
+                                <i data-lucide="heart" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-end justify-between">
+                            <div>
+                                <h2 id="kpi-engagement" class="text-3xl font-extrabold text-slate-900 tracking-tight">63,410</h2>
+                                <div class="flex items-center gap-1.5 mt-2">
+                                    <span id="kpi-engagement-growth" class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-600">
+                                        ↗ +7%
+                                    </span>
+                                    <span class="text-xs text-slate-400">vs. last month</span>
+                                </div>
+                            </div>
+                            <div class="flex items-end gap-1 h-9">
+                                <span class="w-1.5 h-4 bg-brand-100 rounded-full"></span>
+                                <span class="w-1.5 h-6 bg-brand-200 rounded-full"></span>
+                                <span class="w-1.5 h-8 bg-brand-500 rounded-full"></span>
+                                <span class="w-1.5 h-5 bg-brand-500 rounded-full"></span>
+                                <span class="w-1.5 h-4 bg-brand-200 rounded-full"></span>
+                                <span class="w-1.5 h-3 bg-brand-100 rounded-full"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KPI 3: Total Reach -->
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200/70 shadow-soft hover:border-brand-200 transition-all">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-sm font-medium text-slate-500">Total Reach</span>
+                            <div class="w-9 h-9 rounded-xl bg-brand-500 text-white flex items-center justify-center shadow-xs shadow-brand-500/30">
+                                <i data-lucide="radio" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-end justify-between">
+                            <div>
+                                <h2 id="kpi-reach" class="text-3xl font-extrabold text-slate-900 tracking-tight">2.4M</h2>
+                                <div class="flex items-center gap-1.5 mt-2">
+                                    <span id="kpi-reach-growth" class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-600">
+                                        ↗ +14%
+                                    </span>
+                                    <span class="text-xs text-slate-400">vs. last month</span>
+                                </div>
+                            </div>
+                            <div class="flex items-end gap-1 h-9">
+                                <span class="w-1.5 h-3 bg-brand-100 rounded-full"></span>
+                                <span class="w-1.5 h-5 bg-brand-200 rounded-full"></span>
+                                <span class="w-1.5 h-9 bg-brand-500 rounded-full"></span>
+                                <span class="w-1.5 h-7 bg-brand-500 rounded-full"></span>
+                                <span class="w-1.5 h-6 bg-brand-200 rounded-full"></span>
+                                <span class="w-1.5 h-4 bg-brand-100 rounded-full"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KPI 4: Total Impressions -->
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200/70 shadow-soft hover:border-brand-200 transition-all">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-sm font-medium text-slate-500">Total Impressions</span>
+                            <div class="w-9 h-9 rounded-xl bg-brand-500 text-white flex items-center justify-center shadow-xs shadow-brand-500/30">
+                                <i data-lucide="eye" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-end justify-between">
+                            <div>
+                                <h2 id="kpi-impressions" class="text-3xl font-extrabold text-slate-900 tracking-tight">5.1M</h2>
+                                <div class="flex items-center gap-1.5 mt-2">
+                                    <span id="kpi-impressions-growth" class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-600">
+                                        ↗ +9%
+                                    </span>
+                                    <span class="text-xs text-slate-400">vs. last month</span>
+                                </div>
+                            </div>
+                            <div class="flex items-end gap-1 h-9">
+                                <span class="w-1.5 h-4 bg-brand-100 rounded-full"></span>
+                                <span class="w-1.5 h-7 bg-brand-500 rounded-full"></span>
+                                <span class="w-1.5 h-6 bg-brand-500 rounded-full"></span>
+                                <span class="w-1.5 h-5 bg-brand-200 rounded-full"></span>
+                                <span class="w-1.5 h-4 bg-brand-200 rounded-full"></span>
+                                <span class="w-1.5 h-3 bg-brand-100 rounded-full"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROW 2: CHARTS (FOLLOWER GROWTH + AGE DEMOGRAPHICS + SENTIMENT) -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                    
+                    <!-- Card 1: Follower Growth (5 cols) -->
+                    <div class="lg:col-span-5 bg-white rounded-2xl p-6 border border-slate-200/70 shadow-soft flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-base font-bold text-slate-900">Follower Growth</h3>
+                            <select onchange="updateGrowthRange(this.value)" class="bg-white border border-slate-200 text-slate-600 text-xs font-semibold rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer">
+                                <option value="6m">6 Months</option>
+                                <option value="q1">Q1 - Q2</option>
+                            </select>
+                        </div>
+
+                        <!-- Custom Pill Bar Chart -->
+                        <div class="relative h-52 flex items-end justify-between gap-3 pt-6 pl-7 pr-2">
+                            <!-- Y-Axis Labels -->
+                            <div class="absolute left-0 top-4 bottom-7 flex flex-col justify-between text-[11px] font-medium text-slate-400">
+                                <span>8k</span>
+                                <span>6k</span>
+                                <span>4k</span>
+                                <span>2k</span>
+                                <span>0</span>
+                            </div>
+
+                            <!-- Horizontal subtle grid lines -->
+                            <div class="absolute left-7 right-0 top-6 bottom-7 flex flex-col justify-between pointer-events-none">
+                                <div class="border-b border-dashed border-slate-100 w-full"></div>
+                                <div class="border-b border-dashed border-slate-100 w-full"></div>
+                                <div class="border-b border-dashed border-slate-100 w-full"></div>
+                                <div class="border-b border-dashed border-slate-100 w-full"></div>
+                                <div class="border-b border-slate-100 w-full"></div>
+                            </div>
+
+                            <!-- Bars Container (Injected via JS) -->
+                            <div id="growth-bars-container" class="relative z-10 w-full h-full flex items-end justify-around gap-2"></div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Age Demographics (4 cols) -->
+                    <div class="lg:col-span-4 bg-white rounded-2xl p-6 border border-slate-200/70 shadow-soft flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-base font-bold text-slate-900">Age Demographics</h3>
+                            <select onchange="showToast('Memfilter demografi usia berdasarkan periode.', 'info')" class="bg-white border border-slate-200 text-slate-600 text-xs font-semibold rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer">
+                                <option>This Week</option>
+                                <option>This Month</option>
+                            </select>
+                        </div>
+
+                        <div class="relative h-52 flex items-end justify-between pl-7 pr-2 pt-8">
+                            <!-- Y-Axis -->
+                            <div class="absolute left-0 top-6 bottom-7 flex flex-col justify-between text-[11px] font-medium text-slate-400">
+                                <span>60</span>
+                                <span>45</span>
+                                <span>30</span>
+                                <span>15</span>
+                                <span>0</span>
+                            </div>
+
+                            <!-- Grid Lines -->
+                            <div class="absolute left-7 right-0 top-8 bottom-7 flex flex-col justify-between pointer-events-none">
+                                <div class="border-b border-dashed border-slate-100 w-full"></div>
+                                <div class="border-b border-dashed border-slate-100 w-full"></div>
+                                <div class="border-b border-dashed border-slate-100 w-full"></div>
+                                <div class="border-b border-dashed border-slate-100 w-full"></div>
+                                <div class="border-b border-slate-100 w-full"></div>
+                            </div>
+
+                            <!-- Demographics Bars (Injected via JS) -->
+                            <div id="age-bars-container" class="relative z-10 w-full h-full flex items-end justify-around gap-3"></div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Audience Sentiment (3 cols) -->
+                    <div class="lg:col-span-3 bg-white rounded-2xl p-6 border border-slate-200/70 shadow-soft flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-base font-bold text-slate-900">Audience Sentiment</h3>
+                            <button onclick="showToast('Sentimen dihitung dari analisis komentar positif/netral/negatif.', 'info')" class="text-slate-400 hover:text-slate-600">
+                                <i data-lucide="more-horizontal" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+
+                        <!-- Semi-Circle Gauge -->
+                        <div class="relative flex flex-col items-center justify-center my-2">
+                            <svg class="w-48 h-28 overflow-visible" viewBox="0 0 200 110">
+                                <defs>
+                                    <linearGradient id="sentimentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="#3B82F6" />
+                                        <stop offset="60%" stop-color="#4F6EF7" />
+                                        <stop offset="100%" stop-color="#93C5FD" />
+                                    </linearGradient>
+                                </defs>
+                                <!-- Background Track -->
+                                <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#E2E8F0" stroke-width="18" stroke-linecap="round" />
+                                <!-- Active Progress Arc (Total length ~ 251.3) -->
+                                <path id="sentiment-arc" class="gauge-arc" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#sentimentGradient)" stroke-width="18" stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="80.4" />
+                            </svg>
+                            <div class="absolute bottom-1 text-center">
+                                <span id="sentiment-main-pct" class="block text-3xl font-extrabold text-slate-900 leading-none">68%</span>
+                                <span class="text-xs font-medium text-slate-400">Positive</span>
+                            </div>
+                        </div>
+
+                        <!-- Bottom 3 Legend Columns -->
+                        <div class="grid grid-cols-3 gap-2 pt-3 border-t border-slate-100 text-center">
+                            <div>
+                                <p id="sent-pos" class="text-sm font-extrabold text-slate-900">68%</p>
+                                <div class="flex items-center justify-center gap-1 mt-0.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>
+                                    <span class="text-[11px] text-slate-400 font-medium">Positive</span>
+                                </div>
+                            </div>
+                            <div>
+                                <p id="sent-neu" class="text-sm font-extrabold text-slate-900">21%</p>
+                                <div class="flex items-center justify-center gap-1 mt-0.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-brand-300"></span>
+                                    <span class="text-[11px] text-slate-400 font-medium">Neutral</span>
+                                </div>
+                            </div>
+                            <div>
+                                <p id="sent-neg" class="text-sm font-extrabold text-slate-900">11%</p>
+                                <div class="flex items-center justify-center gap-1 mt-0.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                                    <span class="text-[11px] text-slate-400 font-medium">Negative</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ROW 3: ACCOUNT BREAKDOWN TABLE + MOST ACTIVE TIME HEATMAP -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                    
+                    <!-- Account Breakdown (7 cols) -->
+                    <div class="lg:col-span-7 bg-white rounded-2xl p-6 border border-slate-200/70 shadow-soft flex flex-col justify-between">
+                        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900">Instagram Account Breakdown</h3>
+                                <p class="text-xs text-slate-400">Klik salah satu akun untuk melihat detail grafiknya di atas</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="openAddAccountModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-600 text-xs font-bold rounded-lg transition-colors cursor-pointer">
+                                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                                    <span>Add IG Account</span>
+                                </button>
+                                <select class="bg-white border border-slate-200 text-slate-600 text-xs font-semibold rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer">
+                                    <option>This Month</option>
+                                    <option>Last 7 Days</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50/90 text-slate-500 text-xs font-semibold border-y border-slate-100">
+                                        <th class="py-3 px-4 rounded-l-xl">Instagram Account</th>
+                                        <th class="py-3 px-3">Followers</th>
+                                        <th class="py-3 px-3">Engagement</th>
+                                        <th class="py-3 px-3">Reach</th>
+                                        <th class="py-3 px-4 text-right rounded-r-xl">Growth</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="account-table-body" class="divide-y divide-slate-100 text-sm">
+                                    <!-- Rows injected via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Most Active Time Heatmap (5 cols) -->
+                    <div class="lg:col-span-5 bg-white rounded-2xl p-6 border border-slate-200/70 shadow-soft flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-base font-bold text-slate-900">Most Active Time</h3>
+                            <select onchange="renderHeatmap()" class="bg-white border border-slate-200 text-slate-600 text-xs font-semibold rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer">
+                                <option>Today</option>
+                                <option>7 Days Avg</option>
+                            </select>
+                        </div>
+
+                        <!-- 11x4 Grid Heatmap -->
+                        <div id="heatmap-grid" class="grid grid-cols-11 gap-1.5 sm:gap-2 my-2">
+                            <!-- Cells injected via JS -->
+                        </div>
+
+                        <!-- Bottom Summary Metrics -->
+                        <div class="grid grid-cols-3 gap-2 pt-4 mt-2 border-t border-slate-100">
+                            <div>
+                                <p class="text-[11px] font-medium text-slate-400">Peak Window</p>
+                                <p id="peak-window-text" class="text-xs sm:text-sm font-extrabold text-slate-900 mt-0.5">7:00 PM – 9:30 PM</p>
+                            </div>
+                            <div class="border-l border-slate-100 pl-3">
+                                <p class="text-[11px] font-medium text-slate-400">Engagements</p>
+                                <p id="peak-engagements-text" class="text-xs sm:text-sm font-extrabold text-slate-900 mt-0.5">9,840</p>
+                            </div>
+                            <div class="border-l border-slate-100 pl-3">
+                                <p class="text-[11px] font-medium text-slate-400">Likes</p>
+                                <p id="peak-likes-text" class="text-xs sm:text-sm font-extrabold text-slate-900 mt-0.5">6,310</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                </div> <!-- End #view-dashboard -->
+
+                <!-- =========================================================
+                     VIEW 2: AI PLAYGROUND & CONTENT SCHEDULER
+                     ========================================================= -->
+                <div id="view-composer" class="hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">AI Playground & Post Scheduler</h1>
+                                <span class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-brand-50 text-brand-600 border border-brand-100">Gemini Powered</span>
+                            </div>
+                            <p class="text-sm text-slate-500 mt-0.5">Buat caption otomatis dengan Gemini AI, preview tampilan IG, dan jadwalkan ke banyak akun sekaligus.</p>
+                        </div>
+                        <button onclick="switchView('calendar')" class="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold shadow-2xs cursor-pointer">
+                            <i data-lucide="calendar" class="w-4 h-4 text-brand-500"></i>
+                            <span>Lihat Jadwal Tayang</span>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+                        <!-- Left Column: Post Editor & Media Upload (5 cols) -->
+                        <div class="xl:col-span-5 bg-white rounded-2xl p-6 border border-slate-200/70 shadow-soft space-y-5">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">1. Pilih Akun Target (Bisa Multi-Akun)</label>
+                                <div id="composer-accounts-list" class="flex flex-wrap gap-2">
+                                    <!-- Account pills injected via JS -->
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">2. Format Konten Instagram</label>
+                                <div class="grid grid-cols-3 gap-2.5">
+                                    <button type="button" onclick="setPostFormat('Feed')" id="fmt-Feed" class="fmt-btn py-2.5 px-3 rounded-xl border-2 border-brand-500 bg-brand-50 text-brand-700 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all">
+                                        <i data-lucide="image" class="w-4 h-4"></i>
+                                        <span>Feed Post</span>
+                                    </button>
+                                    <button type="button" onclick="setPostFormat('Reels')" id="fmt-Reels" class="fmt-btn py-2.5 px-3 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all">
+                                        <i data-lucide="clapperboard" class="w-4 h-4"></i>
+                                        <span>Reels</span>
+                                    </button>
+                                    <button type="button" onclick="setPostFormat('Story')" id="fmt-Story" class="fmt-btn py-2.5 px-3 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all">
+                                        <i data-lucide="circle-dashed" class="w-4 h-4"></i>
+                                        <span>Story</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Media Upload Area -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">3. Upload Media (Foto / Video MP4)</label>
+                                <label class="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed border-slate-200 hover:border-brand-400 rounded-2xl bg-slate-50/70 hover:bg-brand-50/30 transition-all cursor-pointer p-4 text-center">
+                                    <i data-lucide="upload-cloud" class="w-6 h-6 text-brand-500 mb-1"></i>
+                                    <span id="upload-filename" class="text-xs font-semibold text-slate-700">Klik untuk pilih gambar atau video Reels/Story</span>
+                                    <span class="text-[11px] text-slate-400 mt-0.5">Mendukung JPG, PNG, MP4 (Otomatis ter-preview di sebelah kanan)</span>
+                                    <input type="file" accept="image/*,video/*" onchange="handleMediaUpload(event)" class="hidden">
+                                </label>
+                            </div>
+
+                            <!-- Caption Textarea -->
+                            <div>
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">4. Caption & Hashtags</label>
+                                    <span id="caption-char-count" class="text-[11px] font-medium text-slate-400">0 / 2,200 karakter</span>
+                                </div>
+                                <textarea id="post-caption-input" rows="5" oninput="syncLivePreview()" placeholder="Tulis caption di sini atau gunakan Gemini AI Generator di panel tengah..." class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:bg-white focus:outline-none focus:border-brand-500 transition-all"></textarea>
+                            </div>
+
+                            <!-- Scheduling Controls -->
+                            <div class="pt-2 border-t border-slate-100 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">5. Waktu Publikasi</span>
+                                    <div class="inline-flex rounded-lg bg-slate-100 p-0.5">
+                                        <button type="button" id="pub-mode-sched" onclick="setPublishMode('scheduled')" class="px-2.5 py-1 rounded-md text-xs font-bold bg-white text-brand-600 shadow-2xs cursor-pointer">Schedule</button>
+                                        <button type="button" id="pub-mode-now" onclick="setPublishMode('now')" class="px-2.5 py-1 rounded-md text-xs font-semibold text-slate-500 cursor-pointer">Publish Now</button>
+                                    </div>
+                                </div>
+
+                                <div id="schedule-datetime-box" class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-[11px] font-medium text-slate-500 mb-1">Tanggal Tayang</label>
+                                        <input id="sched-date-input" type="date" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-brand-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-medium text-slate-500 mb-1">Jam Tayang (Peak: 19:30)</label>
+                                        <input id="sched-time-input" type="time" value="19:30" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-brand-500">
+                                    </div>
+                                </div>
+
+                                <button type="button" onclick="submitScheduledPost()" id="submit-post-btn" class="w-full py-3 px-4 bg-brand-500 hover:bg-brand-600 text-white text-sm font-bold rounded-xl shadow-md shadow-brand-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer">
+                                    <i data-lucide="calendar-check" class="w-4 h-4"></i>
+                                    <span>Jadwalkan Konten Sekarang</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Middle Column: Gemini AI Caption Generator (4 cols) -->
+                        <div class="xl:col-span-4 bg-white rounded-2xl p-6 border border-slate-200/70 shadow-soft flex flex-col justify-between space-y-4">
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center shadow-xs">
+                                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-sm font-extrabold text-slate-900">Gemini AI Copywriter</h3>
+                                            <p class="text-[11px] text-slate-400">Buat hook, body & hashtag otomatis</p>
+                                        </div>
+                                    </div>
+                                    <span id="gemini-mode-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600">Smart Ready</span>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Topik / Brief Konten</label>
+                                    <textarea id="ai-brief-input" rows="3" placeholder="Contoh: Promo Buy 1 Get 1 Kopi Aren khusus hari Jumat, ajak followers tag teman kantor..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-brand-500"></textarea>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 mb-1">Gaya Bahasa (Tone)</label>
+                                        <select id="ai-tone-select" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none">
+                                            <option value="Santai & Relatable">Santai & Relatable</option>
+                                            <option value="Promo / Hard Selling">Promo / Hard Selling</option>
+                                            <option value="Profesional & Elegan">Profesional & Elegan</option>
+                                            <option value="Gen-Z / Trendy">Gen-Z / Trendy</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 mb-1">Bahasa</label>
+                                        <select id="ai-lang-select" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none">
+                                            <option value="Bahasa Indonesia">Indonesia</option>
+                                            <option value="English">English</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <button type="button" onclick="generateGeminiCaptions()" id="ai-generate-btn" class="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer">
+                                    <i data-lucide="wand-2" class="w-4 h-4 text-brand-400"></i>
+                                    <span>Generate 3 Opsi Caption</span>
+                                </button>
+
+                                <!-- AI Output Results -->
+                                <div id="ai-results-container" class="space-y-2.5 max-h-[340px] overflow-y-auto pr-1">
+                                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/60 text-xs text-slate-500 text-center py-8">
+                                        Isi brief di atas lalu klik <b>Generate 3 Opsi Caption</b> untuk mendapatkan ide caption siap pakai.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Live Instagram Mobile Mockup Preview (3 cols) -->
+                        <div class="xl:col-span-3 flex flex-col items-center">
+                            <div class="w-full max-w-[310px] bg-white rounded-[32px] p-3.5 border-[6px] border-slate-900 shadow-xl">
+                                <!-- Top Notch -->
+                                <div class="w-20 h-1.5 bg-slate-200 rounded-full mx-auto mb-3"></div>
+                                
+                                <!-- IG Header -->
+                                <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
+                                    <div class="flex items-center gap-2">
+                                        <div id="preview-avatar" class="w-7 h-7 rounded-full bg-amber-500 text-white text-[10px] font-bold flex items-center justify-center">KO</div>
+                                        <div>
+                                            <p id="preview-handle" class="text-xs font-bold text-slate-900 leading-none">@kopisenja.id</p>
+                                            <p id="preview-format-label" class="text-[10px] text-slate-400 mt-0.5">Feed Post • Preview</p>
+                                        </div>
+                                    </div>
+                                    <i data-lucide="more-horizontal" class="w-4 h-4 text-slate-500"></i>
+                                </div>
+
+                                <!-- Media Box -->
+                                <div id="preview-media-box" class="my-2.5 aspect-square w-full rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex flex-col items-center justify-center overflow-hidden relative">
+                                    <img id="preview-img-el" class="hidden w-full h-full object-cover" alt="Preview">
+                                    <video id="preview-vid-el" class="hidden w-full h-full object-cover" muted loop playsinline></video>
+                                    <div id="preview-placeholder" class="text-center p-4">
+                                        <i data-lucide="image" class="w-8 h-8 text-slate-400 mx-auto mb-1"></i>
+                                        <p class="text-[11px] font-medium text-slate-400">Preview Media IG</p>
+                                    </div>
+                                    <span id="preview-badge-overlay" class="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-slate-900/70 text-white text-[10px] font-bold backdrop-blur-xs">Feed</span>
+                                </div>
+
+                                <!-- IG Action Icons -->
+                                <div class="flex items-center justify-between py-1 text-slate-700">
+                                    <div class="flex items-center gap-3">
+                                        <i data-lucide="heart" class="w-4 h-4"></i>
+                                        <i data-lucide="message-circle" class="w-4 h-4"></i>
+                                        <i data-lucide="send" class="w-4 h-4"></i>
+                                    </div>
+                                    <i data-lucide="bookmark" class="w-4 h-4"></i>
+                                </div>
+
+                                <!-- Caption Preview -->
+                                <div class="mt-1.5 text-[11px] text-slate-700 leading-relaxed max-h-24 overflow-y-auto">
+                                    <span id="preview-caption-handle" class="font-bold text-slate-900 mr-1">@kopisenja.id</span>
+                                    <span id="preview-caption-text" class="text-slate-600 whitespace-pre-line">Caption kamu akan tampil secara live di sini...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- End #view-composer -->
+
+                <!-- =========================================================
+                     VIEW 3: CONTENT CALENDAR & QUEUE
+                     ========================================================= -->
+                <div id="view-calendar" class="hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Content Calendar & Schedule Queue</h1>
+                            <p class="text-sm text-slate-500 mt-0.5">Pantau seluruh antrean Reels, Feed, dan Story di semua akun Instagram klien.</p>
+                        </div>
+                        <button onclick="switchView('composer')" class="inline-flex items-center gap-2 px-4 py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs sm:text-sm font-semibold shadow-sm cursor-pointer">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            <span>Buat Jadwal Baru</span>
+                        </button>
+                    </div>
+
+                    <!-- Filter Bar -->
+                    <div class="bg-white rounded-2xl p-4 border border-slate-200/70 shadow-soft flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <button onclick="filterCalendarStatus('all')" class="cal-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-50 text-brand-600 cursor-pointer">Semua</button>
+                            <button onclick="filterCalendarStatus('Scheduled')" class="cal-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-500 hover:bg-slate-50 cursor-pointer">Scheduled</button>
+                            <button onclick="filterCalendarStatus('Published')" class="cal-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-500 hover:bg-slate-50 cursor-pointer">Published</button>
+                        </div>
+                        <p class="text-xs text-slate-400 font-medium">Menampilkan antrean konten lintas akun Instagram</p>
+                    </div>
+
+                    <!-- Scheduled Cards Grid -->
+                    <div id="calendar-list-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                        <!-- Cards rendered by JS -->
+                    </div>
+                </div> <!-- End #view-calendar -->
+
+                <!-- =========================================================
+                     VIEW 4: API & GITHUB PAGES SETTINGS
+                     ========================================================= -->
+                <div id="view-settings" class="hidden space-y-6">
+                    <div>
+                        <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">API & Cloud Integrations</h1>
+                        <p class="text-sm text-slate-500 mt-0.5">Hubungkan kredensial gratis kamu. Semua kunci disimpan aman di browser (localStorage) kamu sendiri.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Meta Instagram Graph API -->
+                        <div class="bg-white rounded-2xl p-6 border border-slate-200/70 shadow-soft space-y-4">
+                            <div class="flex items-center gap-3 pb-3 border-b border-slate-100">
+                                <div class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center">
+                                    <i data-lucide="instagram" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-bold text-slate-900">1. Meta Instagram Graph API</h3>
+                                    <p class="text-xs text-slate-400">Untuk menarik insight akun & publish konten otomatis</p>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Long-Lived Access Token (Meta Developers)</label>
+                                <input id="set-meta-token" type="password" placeholder="EAABsbCS1iHgBO..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-brand-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Default IG Business User ID</label>
+                                <input id="set-meta-igid" type="text" placeholder="17841405822304914" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-brand-500">
+                            </div>
+                        </div>
+
+                        <!-- Gemini AI & Cloudinary -->
+                        <div class="bg-white rounded-2xl p-6 border border-slate-200/70 shadow-soft space-y-4">
+                            <div class="flex items-center gap-3 pb-3 border-b border-slate-100">
+                                <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-bold text-slate-900">2. Gemini AI & Cloudinary Storage</h3>
+                                    <p class="text-xs text-slate-400">Untuk generator caption AI & hosting URL media publik</p>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Google Gemini API Key (aistudio.google.com)</label>
+                                <input id="set-gemini-key" type="password" placeholder="AIzaSy..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-brand-500">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Cloudinary Cloud Name</label>
+                                    <input id="set-cloud-name" type="text" placeholder="demo-cloud" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-brand-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Unsigned Upload Preset</label>
+                                    <input id="set-cloud-preset" type="text" placeholder="ig_preset" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-brand-500">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button onclick="saveAllSettings()" class="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white text-sm font-bold rounded-xl shadow-md shadow-brand-500/20 cursor-pointer">
+                            Simpan Semua Konfigurasi
+                        </button>
+                    </div>
+                </div> <!-- End #view-settings -->
+
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL 1: CONNECT INSTAGRAM GRAPH API -->
+    <div id="api-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl border border-slate-100 animate-fade-in">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center">
+                        <i data-lucide="key-round" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900">Connect Instagram Graph API</h3>
+                        <p class="text-xs text-slate-400">100% Gratis menggunakan Meta for Developers</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('api-modal')" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="py-4 space-y-4">
+                <div class="bg-brand-50/70 border border-brand-100 rounded-xl p-3.5 text-xs text-slate-600 space-y-1">
+                    <p class="font-bold text-brand-700">Cara mendapatkan Token Gratis:</p>
+                    <p>1. Buka <b>developers.facebook.com</b> &rarr; Graph API Explorer.</p>
+                    <p>2. Centang permission: <code class="bg-white px-1 py-0.5 rounded text-brand-600">instagram_basic</code> & <code class="bg-white px-1 py-0.5 rounded text-brand-600">instagram_manage_insights</code>.</p>
+                    <p>3. Paste Long-Lived Access Token di bawah ini.</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Meta Long-Lived Access Token</label>
+                    <input id="api-token-input" type="password" placeholder="EAABsbCS1iHgBO..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-brand-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">IG Business Account ID (Contoh)</label>
+                    <input id="api-ig-id-input" type="text" placeholder="17841405822304914" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-brand-500">
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+                <button onclick="closeModal('api-modal')" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">Batal</button>
+                <button onclick="saveApiConfig()" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold rounded-xl shadow-xs cursor-pointer">
+                    Simpan & Uji Koneksi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: ADD NEW INSTAGRAM ACCOUNT -->
+    <div id="add-account-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-100">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                <h3 class="text-base font-bold text-slate-900">Tambah Akun Instagram Baru</h3>
+                <button onclick="closeModal('add-account-modal')" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleAddAccount(event)" class="py-4 space-y-3.5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Username Instagram</label>
+                    <input id="new-acc-handle" type="text" required placeholder="@brandbaru.id" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-brand-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Jumlah Followers</label>
+                        <input id="new-acc-followers" type="number" required placeholder="45200" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Engagement (Bulan Ini)</label>
+                        <input id="new-acc-engagement" type="number" required placeholder="12400" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-brand-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Total Reach</label>
+                        <input id="new-acc-reach" type="number" required placeholder="320000" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Growth (%)</label>
+                        <input id="new-acc-growth" type="number" required placeholder="15" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-brand-500">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeModal('add-account-modal')" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold rounded-xl cursor-pointer">Tambahkan Akun</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: PANDUAN SETUP GRATIS -->
+    <div id="help-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl border border-slate-100">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 class="text-base font-bold text-slate-900">Deploy Gratis via GitHub Web (Tanpa Install Aplikasi)</h3>
+                <button onclick="closeModal('help-modal')" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="py-4 space-y-3 text-xs text-slate-600 leading-relaxed">
+                <p>Kamu bisa meng-online-kan dashboard ini <b>100% gratis</b> langsung dari browser lewat GitHub Web:</p>
+                <div class="p-3.5 bg-slate-50 rounded-xl space-y-2 border border-slate-200/60">
+                    <p><b>1. Buat Repository Baru:</b> Buka github.com &rarr; klik <b>+ New repository</b> &rarr; beri nama <code class="text-brand-600">ig-dashboard</code> &rarr; pilih <b>Private/Public</b>.</p>
+                    <p><b>2. Upload File HTML:</b> Klik <b>Add file &rarr; Create new file</b>, beri nama <code class="text-brand-600">index.html</code>, lalu paste seluruh kode ini dan klik <b>Commit changes</b>.</p>
+                    <p><b>3. Aktifkan GitHub Pages:</b> Masuk ke tab <b>Settings &rarr; Pages</b>, pada bagian Branch pilih <b>main</b> lalu klik <b>Save</b>. Dalam 1 menit web kamu sudah online!</p>
+                </div>
+            </div>
+            <div class="flex justify-end pt-2">
+                <button onclick="closeModal('help-modal')" class="px-4 py-2 bg-slate-900 text-white text-xs font-semibold rounded-xl cursor-pointer">Mengerti</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+// ... existing code ... -->
+        let currentSelectedAccountId = 'all';
+        let selectedComposerAccounts = ['acc_1'];
+        let currentPostFormat = 'Feed';
+        let currentPublishMode = 'scheduled';
+        let uploadedMediaPreviewUrl = null;
+        let uploadedMediaType = 'image';
+        let calendarFilter = 'all';
+
+        // Sample Scheduled & Published Posts
+        let scheduledPosts = [
+            {
+                id: 'post_1',
+                accountHandle: '@kopisenja.id',
+                accountColor: 'bg-amber-500',
+                format: 'Reels',
+                caption: 'Hujan sore paling pas ditemani Es Kopi Aren Senja ☕✨ Tag teman ngopi kamu di kolom komentar! #kopisenja #ngopisore',
+                date: '2026-11-24',
+                time: '19:30',
+                status: 'Scheduled'
+            },
+            {
+                id: 'post_2',
+                accountHandle: '@glowskin.official',
+                accountColor: 'bg-pink-500',
+                format: 'Feed',
+                caption: '3 langkah simpel menjaga skin barrier tetap lembap seharian tanpa rasa lengket. Slide sampai habis ya! 💧✨ #skincareroutine',
+                date: '2026-11-25',
+                time: '20:00',
+                status: 'Scheduled'
+            },
+            {
+                id: 'post_3',
+                accountHandle: '@urbanfit.studio',
+                accountColor: 'bg-emerald-500',
+                format: 'Story',
+                caption: 'Slot kelas Pilates besok pagi sisa 3 seat lagi! Swipe up / klik link di bio untuk booking sekarang 💪',
+                date: '2026-11-22',
+                time: '17:30',
+                status: 'Published'
+            }
+        ];
+
+        // =========================================================================
+        // 2. VIEW NAVIGATION & COMPOSER LOGIC
+        // =========================================================================
+        function switchView(viewName) {
+            const views = ['dashboard', 'composer', 'calendar', 'settings'];
+            views.forEach(v => {
+                const el = document.getElementById('view-' + v);
+                if (el) el.classList.add('hidden');
+            });
+            const target = document.getElementById('view-' + viewName);
+            if (target) target.classList.remove('hidden');
+
+            // Update sidebar active state
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.remove('bg-brand-50', 'text-brand-600', 'font-semibold');
+                btn.classList.add('text-slate-600', 'font-medium');
+            });
+            const activeNav = document.getElementById('nav-' + viewName);
+            if (activeNav) {
+                activeNav.classList.remove('text-slate-600', 'font-medium');
+                activeNav.classList.add('bg-brand-50', 'text-brand-600', 'font-semibold');
+            }
+
+            if (viewName === 'composer') renderComposerAccounts();
+            if (viewName === 'calendar') renderCalendarList();
+            if (viewName === 'settings') loadSettingsInputs();
+
+            // Close mobile sidebar if open
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar.classList.contains('-translate-x-full') && window.innerWidth < 1024) {
+                toggleSidebar();
+            }
+        }
+
+        function renderComposerAccounts() {
+            const container = document.getElementById('composer-accounts-list');
+            container.innerHTML = '';
+            managedAccounts.forEach(acc => {
+                const isSelected = selectedComposerAccounts.includes(acc.id);
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `px-3 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
+                    isSelected 
+                    ? 'bg-brand-50 border-brand-500 text-brand-700' 
+                    : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                }`;
+                btn.innerHTML = `
+                    <span class="w-2 h-2 rounded-full ${acc.color}"></span>
+                    <span>${acc.handle}</span>
+                `;
+                btn.onclick = () => {
+                    if (isSelected && selectedComposerAccounts.length > 1) {
+                        selectedComposerAccounts = selectedComposerAccounts.filter(id => id !== acc.id);
+                    } else if (!isSelected) {
+                        selectedComposerAccounts.push(acc.id);
+                    }
+                    renderComposerAccounts();
+                    syncLivePreview();
+                };
+                container.appendChild(btn);
+            });
+            syncLivePreview();
+        }
+
+        function setPostFormat(fmt) {
+            currentPostFormat = fmt;
+            document.querySelectorAll('.fmt-btn').forEach(btn => {
+                btn.classList.remove('border-2', 'border-brand-500', 'bg-brand-50', 'text-brand-700');
+                btn.classList.add('border', 'border-slate-200', 'bg-white', 'text-slate-600');
+            });
+            const activeBtn = document.getElementById('fmt-' + fmt);
+            activeBtn.classList.remove('border', 'border-slate-200', 'bg-white', 'text-slate-600');
+            activeBtn.classList.add('border-2', 'border-brand-500', 'bg-brand-50', 'text-brand-700');
+
+            // Adjust preview aspect ratio
+            const mediaBox = document.getElementById('preview-media-box');
+            if (fmt === 'Reels' || fmt === 'Story') {
+                mediaBox.classList.remove('aspect-square');
+                mediaBox.classList.add('aspect-[9/14]');
+            } else {
+                mediaBox.classList.remove('aspect-[9/14]');
+                mediaBox.classList.add('aspect-square');
+            }
+            document.getElementById('preview-badge-overlay').textContent = fmt;
+            document.getElementById('preview-format-label').textContent = `${fmt} • Preview`;
+        }
+
+        function handleMediaUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            document.getElementById('upload-filename').textContent = file.name;
+            const url = URL.createObjectURL(file);
+            uploadedMediaPreviewUrl = url;
+
+            const imgEl = document.getElementById('preview-img-el');
+            const vidEl = document.getElementById('preview-vid-el');
+            const placeholder = document.getElementById('preview-placeholder');
+            placeholder.classList.add('hidden');
+
+            if (file.type.startsWith('video/')) {
+                uploadedMediaType = 'video';
+                imgEl.classList.add('hidden');
+                vidEl.src = url;
+                vidEl.classList.remove('hidden');
+                vidEl.play();
+                setPostFormat('Reels');
+            } else {
+                uploadedMediaType = 'image';
+                vidEl.classList.add('hidden');
+                imgEl.src = url;
+                imgEl.classList.remove('hidden');
+            }
+            showToast('Media berhasil dimuat ke preview!', 'success');
+        }
+
+        function syncLivePreview() {
+            const firstAcc = managedAccounts.find(a => a.id === selectedComposerAccounts[0]) || managedAccounts[0];
+            document.getElementById('preview-handle').textContent = firstAcc.handle;
+            document.getElementById('preview-caption-handle').textContent = firstAcc.handle;
+            document.getElementById('preview-avatar').textContent = firstAcc.handle.replace('@', '').substring(0, 2).toUpperCase();
+
+            const captionVal = document.getElementById('post-caption-input').value;
+            document.getElementById('caption-char-count').textContent = `${captionVal.length} / 2,200 karakter`;
+            document.getElementById('preview-caption-text').textContent = captionVal || 'Caption kamu akan tampil secara live di sini...';
+        }
+
+        function setPublishMode(mode) {
+            currentPublishMode = mode;
+            const btnSched = document.getElementById('pub-mode-sched');
+            const btnNow = document.getElementById('pub-mode-now');
+            const dateBox = document.getElementById('schedule-datetime-box');
+            const submitBtn = document.getElementById('submit-post-btn');
+
+            if (mode === 'scheduled') {
+                btnSched.className = 'px-2.5 py-1 rounded-md text-xs font-bold bg-white text-brand-600 shadow-2xs cursor-pointer';
+                btnNow.className = 'px-2.5 py-1 rounded-md text-xs font-semibold text-slate-500 cursor-pointer';
+                dateBox.classList.remove('hidden');
+                submitBtn.innerHTML = `<i data-lucide="calendar-check" class="w-4 h-4"></i><span>Jadwalkan Konten Sekarang</span>`;
+            } else {
+                btnNow.className = 'px-2.5 py-1 rounded-md text-xs font-bold bg-white text-brand-600 shadow-2xs cursor-pointer';
+                btnSched.className = 'px-2.5 py-1 rounded-md text-xs font-semibold text-slate-500 cursor-pointer';
+                dateBox.classList.add('hidden');
+                submitBtn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i><span>Publish Langsung ke IG</span>`;
+            }
+            lucide.createIcons();
+        }
+
+        function submitScheduledPost() {
+            const caption = document.getElementById('post-caption-input').value.trim();
+            if (!caption) {
+                showToast('Tulis atau generate caption terlebih dahulu.', 'error');
+                return;
+            }
+            const dateVal = document.getElementById('sched-date-input').value || new Date().toISOString().slice(0, 10);
+            const timeVal = document.getElementById('sched-time-input').value || '19:30';
+
+            selectedComposerAccounts.forEach(accId => {
+                const acc = managedAccounts.find(a => a.id === accId);
+                if (acc) {
+                    scheduledPosts.unshift({
+                        id: 'post_' + Date.now() + Math.random(),
+                        accountHandle: acc.handle,
+                        accountColor: acc.color,
+                        format: currentPostFormat,
+                        caption: caption,
+                        date: dateVal,
+                        time: timeVal,
+                        status: currentPublishMode === 'scheduled' ? 'Scheduled' : 'Published'
+                    });
+                }
+            });
+
+            document.getElementById('sidebar-sched-count').textContent = scheduledPosts.length;
+            showToast(
+                currentPublishMode === 'scheduled' 
+                ? `Berhasil dijadwalkan untuk ${selectedComposerAccounts.length} akun IG!` 
+                : `Konten berhasil dikirim ke antrean publish!`, 
+                'success'
+            );
+            switchView('calendar');
+        }
+
+        // =========================================================================
+        // 3. GEMINI AI CAPTION GENERATOR (Real API + Smart Fallback)
+        // =========================================================================
+        async function generateGeminiCaptions() {
+            const brief = document.getElementById('ai-brief-input').value.trim();
+            const tone = document.getElementById('ai-tone-select').value;
+            const lang = document.getElementById('ai-lang-select').value;
+            const btn = document.getElementById('ai-generate-btn');
+            const container = document.getElementById('ai-results-container');
+
+            if (!brief) {
+                showToast('Masukkan topik atau brief konten terlebih dahulu.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Gemini sedang menulis...</span>`;
+            lucide.createIcons();
+
+            const savedGeminiKey = localStorage.getItem('gemini_api_key');
+            let options = [];
+
+            if (savedGeminiKey) {
+                try {
+                    const prompt = `Kamu adalah Social Media Specialist profesional. Buatkan 3 variasi caption Instagram format ${currentPostFormat} dalam ${lang} dengan gaya bahasa ${tone}. Topik: "${brief}". Sertakan hook menarik di baris pertama, CTA, dan 5 hashtag relevan. Pisahkan setiap opsi dengan tanda "---".`;
+                    const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${savedGeminiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: prompt }] }]
+                        })
+                    });
+                    const json = await resp.json();
+                    const rawText = json?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (rawText) {
+                        options = rawText.split('---').map(s => s.trim()).filter(Boolean).slice(0, 3);
+                    }
+                } catch (e) {
+                    console.warn('Fallback ke smart generator:', e);
+                }
+            }
+
+            // Fallback built-in generator jika belum mengisi API Key Gemini
+            if (options.length === 0) {
+                await new Promise(r => setTimeout(r, 650));
+                if (lang === 'English') {
+                    options = [
+                        `✨ Stop scrolling! Here is why ${brief} is exactly what your week needs.\n\nSave this post for later and tag someone who needs to see this! 👇\n\n#InstagramGrowth #DailyInspo #TrendingNow #ContentCreator #MustTry`,
+                        `Ready to level up your day? 🚀 Let's talk about ${brief}.\n\nDrop a "🔥" in the comments if you agree!\n\n#SocialMediaTips #Lifestyle #CommunityFirst #ExplorePage #ViralReels`,
+                        `POV: You finally discovered ${brief} 😍\n\nClick the link in bio to check it out before it's gone!\n\n#NewDrop #LimitedOffer #AestheticVibes #InstaDaily #BrandStory`
+                    ];
+                } else {
+                    options = [
+                        `✨ Jujur deh, siapa yang bisa nolak ${brief}? 😍\n\nJangan cuma dilihatin aja—langsung save postingan ini dan tag teman kamu yang wajib diajak bareng! 👇💬\n\n#RekomendasiHariIni #InfoViral #KontenKreator #fypindonesia #WajibCoba`,
+                        `Biar hari kamu makin produktif & happy, kenalan dulu sama ${brief}! 🚀\n\nMenurut kamu gimana? Tulis pendapatmu di kolom komentar ya! 👇✨\n\n#TipsHarian #Inspirasi #KomunitasIndonesia #ExploreInstagram #TrendingID`,
+                        `⚡ SPECIAL ALERT! ${brief} siap nemenin momen terbaik kamu minggu ini.\n\nKlik link di bio sekarang sebelum kehabisan slot/kuotanya! 🔥\n\n#PromoSpesial #LimitedEdition #InfoTerkini #BrandLokal #JakartaHits`
+                    ];
+                }
+            }
+
+            container.innerHTML = '';
+            options.forEach((optText, i) => {
+                const card = document.createElement('div');
+                card.className = 'p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 hover:border-brand-300 transition-all space-y-2.5';
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-2 py-0.5 rounded-md">Opsi #${i + 1} • ${tone}</span>
+                        <button type="button" class="use-cap-btn text-[11px] font-bold text-slate-900 hover:text-brand-600 flex items-center gap-1 cursor-pointer">
+                            <span>Use Caption</span>
+                            <i data-lucide="arrow-up-left" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                    <p class="text-xs text-slate-700 whitespace-pre-line leading-relaxed">${optText}</p>
+                `;
+                card.querySelector('.use-cap-btn').onclick = () => {
+                    document.getElementById('post-caption-input').value = optText;
+                    syncLivePreview();
+                    showToast(`Opsi #${i + 1} diterapkan ke editor post!`, 'success');
+                };
+                container.appendChild(card);
+            });
+
+            btn.disabled = false;
+            btn.innerHTML = `<i data-lucide="wand-2" class="w-4 h-4 text-brand-400"></i><span>Generate 3 Opsi Caption</span>`;
+            lucide.createIcons();
+        }
+
+        // =========================================================================
+        // 4. CONTENT CALENDAR RENDERER
+        // =========================================================================
+        function filterCalendarStatus(status) {
+            calendarFilter = status;
+            document.querySelectorAll('.cal-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-50', 'text-brand-600', 'font-bold');
+                btn.classList.add('text-slate-500', 'font-semibold');
+            });
+            event.target.classList.remove('text-slate-500', 'font-semibold');
+            event.target.classList.add('bg-brand-50', 'text-brand-600', 'font-bold');
+            renderCalendarList();
+        }
+
+        function renderCalendarList() {
+            const container = document.getElementById('calendar-list-container');
+            container.innerHTML = '';
+
+            const filtered = calendarFilter === 'all' 
+                ? scheduledPosts 
+                : scheduledPosts.filter(p => p.status === calendarFilter);
+
+            filtered.forEach(post => {
+                const isSched = post.status === 'Scheduled';
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-2xl p-5 border border-slate-200/70 shadow-soft flex flex-col justify-between space-y-4';
+                card.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full ${post.accountColor}"></span>
+                                <span class="text-xs font-bold text-slate-900">${post.accountHandle}</span>
+                            </div>
+                            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                                isSched ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'
+                            }">${post.status}</span>
+                        </div>
+
+                        <div class="flex items-center gap-2 text-[11px] text-slate-500 font-semibold">
+                            <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700">${post.format}</span>
+                            <span>•</span>
+                            <span>${post.date} pukul ${post.time}</span>
+                        </div>
+
+                        <p class="text-xs text-slate-600 leading-relaxed line-clamp-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            ${post.caption}
+                        </p>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                        <button onclick="deleteScheduledPost('${post.id}')" class="text-xs font-semibold text-rose-500 hover:text-rose-600 cursor-pointer">Hapus</button>
+                        ${isSched ? `<button onclick="markAsPublished('${post.id}')" class="text-xs font-bold text-brand-600 hover:underline cursor-pointer">Publish Sekarang &rarr;</button>` : '<span class="text-[11px] text-slate-400">Terkirim ke IG</span>'}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function deleteScheduledPost(id) {
+            scheduledPosts = scheduledPosts.filter(p => p.id !== id);
+            document.getElementById('sidebar-sched-count').textContent = scheduledPosts.length;
+            renderCalendarList();
+            showToast('Jadwal konten dihapus.', 'info');
+        }
+
+        function markAsPublished(id) {
+            const item = scheduledPosts.find(p => p.id === id);
+            if (item) item.status = 'Published';
+            renderCalendarList();
+            showToast('Status diubah menjadi Published!', 'success');
+        }
+
+        // =========================================================================
+        // 5. SETTINGS STORAGE (LocalStorage for GitHub Pages)
+        // =========================================================================
+        function loadSettingsInputs() {
+            document.getElementById('set-meta-token').value = localStorage.getItem('ig_graph_token') || '';
+            document.getElementById('set-meta-igid').value = localStorage.getItem('ig_business_id') || '';
+            document.getElementById('set-gemini-key').value = localStorage.getItem('gemini_api_key') || '';
+            document.getElementById('set-cloud-name').value = localStorage.getItem('cloudinary_cloud') || '';
+            document.getElementById('set-cloud-preset').value = localStorage.getItem('cloudinary_preset') || '';
+        }
+
+        function saveAllSettings() {
+            const metaToken = document.getElementById('set-meta-token').value.trim();
+            const metaIgId = document.getElementById('set-meta-igid').value.trim();
+            const geminiKey = document.getElementById('set-gemini-key').value.trim();
+            const cloudName = document.getElementById('set-cloud-name').value.trim();
+            const cloudPreset = document.getElementById('set-cloud-preset').value.trim();
+
+            if (metaToken) localStorage.setItem('ig_graph_token', metaToken);
+            if (metaIgId) localStorage.setItem('ig_business_id', metaIgId);
+            if (geminiKey) {
+                localStorage.setItem('gemini_api_key', geminiKey);
+                document.getElementById('gemini-mode-badge').textContent = 'Live Gemini API';
+            }
+            if (cloudName) localStorage.setItem('cloudinary_cloud', cloudName);
+            if (cloudPreset) localStorage.setItem('cloudinary_preset', cloudPreset);
+
+            document.getElementById('api-status-dot').classList.remove('bg-amber-400');
+            document.getElementById('api-status-dot').classList.add('bg-emerald-500');
+            document.getElementById('api-status-title').textContent = 'APIs Configured';
+
+            showToast('Semua API Key & konfigurasi tersimpan di browser!', 'success');
+        }
+
+        // =========================================================================
+        // 6. FORMATTER HELPERS
+        // =========================================================================
+        function formatCompactNumber(num) {
+// ... existing code ... -->
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            populateAccountDropdown();
+            renderDashboard();
+            const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+            const dateInput = document.getElementById('sched-date-input');
+            if (dateInput) dateInput.value = tomorrow;
+            if (localStorage.getItem('gemini_api_key')) {
+                document.getElementById('gemini-mode-badge').textContent = 'Live Gemini API';
+            }
+        });
+    </script>
+</body>
+</html>
